@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Payment Method Cards */
+        .payment-method {
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-method:hover {
+            border-color: #2563EB;
+            background: #EFF6FF;
+        }
+
+        .payment-method.active {
+            border-color: #2563EB;
+            background: #EFF6FF;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .payment-method-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: white;
+            border: 1px solid #E5E7EB;
+        }
+
+        .payment-method.active .payment-method-icon {
+            background: white;
+            border-color: #2563EB;
+        }
+
+        .payment-method-icon img {
+            filter: none;
+        }
+
+        .payment-method.active .payment-method-icon img {
+            filter: none;
+        }
+
+        .payment-method-content {
+            flex: 1;
+        }
+
+        .payment-method-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-method-subtitle {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .payment-method-radio {
+            width: 24px;
+            height: 24px;
+            accent-color: #2563EB;
+            cursor: pointer;
+        }
+
+        .payment-form-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #F9FAFB;
+            border-radius: 12px;
+        }
+
+        .payment-form-section.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Payment Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Complete Payment</h2>
+                <p class="section-subtitle">Choose your preferred payment method</p>
+            </div>
+
+            <div class="form-row">
+                <!-- Payment Methods -->
+                <div class="feature-card" style="flex: 2;">
+                    <h3 class="mb-3">Select Payment Method</h3>
+                    
+                    <div id="paymentMethods">
+                        <!-- Cash on Delivery -->
+                        <div class="payment-method active" data-method="cod">
+                            <div class="payment-method-icon">💵</div>
+                            <div class="payment-method-content">
+                                <div class="payment-method-title">Cash on Delivery</div>
+                                <div class="payment-method-subtitle">Pay when you collect the bike</div>
+                            </div>
+                            <input type="radio" name="paymentMethod" value="cod" class="payment-method-radio" checked>
+                        </div>
+
+                        <!-- UPI / Phone Number Payment -->
+                        <div class="payment-method" data-method="upi">
+                            <div class="payment-method-icon">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" style="width: 35px; height: 35px; object-fit: contain;">
+                            </div>
+                            <div class="payment-method-content">
+                                <div class="payment-method-title">UPI / Phone Number</div>
+                                <div class="payment-method-subtitle">Pay using UPI ID or registered mobile number</div>
+                            </div>
+                            <input type="radio" name="paymentMethod" value="upi" class="payment-method-radio">
+                        </div>
+
+                        <!-- Cash on Delivery Form -->
+                        <div id="codForm" class="payment-form-section active">
+                            <h4 class="mb-2">Cash Payment Details</h4>
+                            <div class="alert alert-info mb-3">
+                                <strong>Note:</strong> You will need to pay the rental amount in cash when collecting the bike at the pickup location.
+                            </div>
+                            <p>Amount to be paid: <strong>₹<span id="codAmount">3,500</span></strong></p>
+                        </div>
+
+                        <!-- UPI Form -->
+                        <div id="upiForm" class="payment-form-section">
+                            <h4 class="mb-2">Pay with UPI</h4>
+                            <div class="form-group">
+                                <label>UPI ID or Phone Number <span class="required">*</span></label>
+                                <input type="text" class="form-control" placeholder="Enter UPI ID (e.g., yourname@paytm) or Phone Number" id="upiId" required>
+                            </div>
+                            <p>Amount to be paid: <strong>₹<span id="upiAmount">3,500</span></strong></p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-large mt-4" id="confirmPayment">
+                        Confirm and Proceed
+                    </button>
+                </div>
+
+                <!-- Booking Summary -->
+                <div class="feature-card" id="bookingSummaryCard">
+                    <h3 class="mb-3">Booking Summary</h3>
+                    <!-- Bike Image -->
+                    <div id="bikeImageContainer" style="text-align: center; margin-bottom: 1.5rem; display: none;">
+                        <img id="bikeImage" src="" alt="Bike" style="max-width: 100%; height: auto; border-radius: 12px; max-height: 200px; object-fit: contain;">
+                        <p id="bikeName" style="margin-top: 0.5rem; font-weight: 600; color: var(--dark);"></p>
+                    </div>
+                    <div class="summary-item">
+                        <span id="rentalDescription">Bike Rental (5 days)</span>
+                        <strong id="rentalAmount">₹3,000</strong>
+                    </div>
+                    <div class="summary-item" id="insuranceRow" style="display: none;">
+                        <span>Insurance</span>
+                        <strong id="insuranceAmount">₹0</strong>
+                    </div>
+                    <div class="summary-item" id="gpsRow" style="display: none;">
+                        <span>GPS Navigation</span>
+                        <strong id="gpsAmount">₹0</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Security Deposit</span>
+                        <strong>₹5,000</strong>
+                    </div>
+                    <div class="summary-item" id="gstRow" style="display: none;">
+                        <span>GST (18%)</span>
+                        <strong id="gstAmount">₹0</strong>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-item summary-total">
+                        <span>Total Amount</span>
+                        <strong id="totalAmountDisplay">₹3,500</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Load bikes data -->
+    <script src="../assets/js/bikes-data.js"></script>
+
+    <script>
+        // Load booking data and calculate pricing
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPaymentData();
+        });
+
+        function loadPaymentData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bikeId = urlParams.get('bike');
+            const destinationId = urlParams.get('destination');
+            const startDate = urlParams.get('startDate');
+            const endDate = urlParams.get('endDate');
+            const hasInsurance = false;
+            const hasGps = false;
+            
+            console.log('Payment page loaded with params:', {
+                bikeId, destinationId, startDate, endDate, hasInsurance, hasGps
+            });
+            
+            // Get pricing from URL parameters (calculated in booking page)
+            const days = parseInt(urlParams.get('days')) || 0;
+            const basePrice = parseInt(urlParams.get('basePrice')) || 0;
+            const insurance = 0;
+            const gps =  0;
+            const deposit = parseInt(urlParams.get('deposit')) || 5000;
+            const gst = parseInt(urlParams.get('gst')) || 0;
+            const total = parseInt(urlParams.get('total')) || 0;
+
+            console.log('Pricing data from URL:', {
+                days, basePrice, insurance, gps, deposit, gst, total
+            });
+
+            // ALWAYS store urlParams for confirmation page
+            window.bookingParams = urlParams;
+            window.bookingTotal = total;
+
+            // If we have all the pricing data from booking page, use it directly
+            if (total && total > 0 && days > 0 && basePrice > 0) {
+                console.log('✅ Using pricing data from booking page');
+                // We have complete pricing data from booking page - use it!
+                const bike = getBikeById(bikeId);
+                const bikeName = bike ? bike.name : 'Bike Rental';
+                
+                // Display bike image
+                if (bike && bike.image) {
+                    const bikeImageContainer = document.getElementById('bikeImageContainer');
+                    const bikeImageElement = document.getElementById('bikeImage');
+                    const bikeNameElement = document.getElementById('bikeName');
+                    
+                    bikeImageElement.src = `../assets/images/vehicles/${bike.image}`;
+                    bikeImageElement.alt = bikeName;
+                    bikeNameElement.textContent = bikeName;
+                    bikeImageContainer.style.display = 'block';
+                }
+                
+                // Update UI with pricing from booking page
+                document.getElementById('rentalDescription').textContent = `${bikeName} (${days} days)`;
+                document.getElementById('rentalAmount').textContent = `₹${basePrice.toLocaleString()}`;
+                
+                // Update COD and UPI amounts
+                document.getElementById('codAmount').textContent = total.toLocaleString();
+                document.getElementById('upiAmount').textContent = total.toLocaleString();
+
+                // Show/hide insurance
+                if (insurance > 0) {
+                    document.getElementById('insuranceRow').style.display = 'flex';
+                    document.getElementById('insuranceAmount').textContent = `₹${insurance.toLocaleString()}`;
+                } else {
+                    document.getElementById('insuranceRow').style.display = 'none';
+                }
+
+                // Show/hide GPS
+                if (gps > 0) {
+                    document.getElementById('gpsRow').style.display = 'flex';
+                    document.getElementById('gpsAmount').textContent = `₹${gps.toLocaleString()}`;
+                } else {
+                    document.getElementById('gpsRow').style.display = 'none';
+                }
+
+                // Show GST
+                document.getElementById('gstRow').style.display = 'flex';
+                document.getElementById('gstAmount').textContent = `₹${gst.toLocaleString()}`;
+
+                // Update total
+                document.getElementById('totalAmountDisplay').textContent = `₹${total.toLocaleString()}`;
+                
+                // Set the booking total
+                window.bookingTotal = total;
+                console.log('✅ Payment page loaded successfully');
+                return;
+            }
+
+            // If no pricing data, try to calculate it from bike data
+            console.warn('⚠️ No complete pricing data in URL, attempting to calculate...');
+            
+            if (!bikeId || !startDate || !endDate) {
+                // Can't calculate without minimum data - show default
+                console.warn('⚠️ Insufficient data to calculate pricing, using defaults');
+                document.getElementById('totalAmountDisplay').textContent = '₹8,500';
+                document.getElementById('codAmount').textContent = '8500';
+                document.getElementById('upiAmount').textContent = '8500';
+                window.bookingTotal = 8500;
+                return;
+            }
+
+            const bike = getBikeById(bikeId);
+            if (!bike) {
+                console.warn('⚠️ Bike not found, using defaults');
+                document.getElementById('totalAmountDisplay').textContent = '₹8,500';
+                document.getElementById('codAmount').textContent = '8500';
+                document.getElementById('upiAmount').textContent = '8500';
+                window.bookingTotal = 8500;
+                return;
+            }
+
+            console.log('✅ Bike found, calculating pricing...', bike);
+
+            // Calculate dates and pricing from bike data
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const calcDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const calcBasePrice = bike.dailyRate * calcDays;
+            const calcInsurance = hasInsurance ? 100 * calcDays : 0;
+            const calcGps = hasGps ? 50 * calcDays : 0;
+            const calcDeposit = 5000;
+            const calcSubtotal = calcBasePrice + calcInsurance + calcGps + calcDeposit;
+            const calcGst = Math.round(calcSubtotal * 0.18);
+            const calcTotal = calcSubtotal + calcGst;
+
+            console.log('✅ Calculated pricing:', {
+                calcDays, calcBasePrice, calcInsurance, calcGps, calcDeposit, calcGst, calcTotal
+            });
+
+            // Display bike image
+            if (bike && bike.image) {
+                const bikeImageContainer = document.getElementById('bikeImageContainer');
+                const bikeImageElement = document.getElementById('bikeImage');
+                const bikeNameElement = document.getElementById('bikeName');
+                
+                bikeImageElement.src = `../assets/images/vehicles/${bike.image}`;
+                bikeImageElement.alt = bike.name;
+                bikeNameElement.textContent = bike.name;
+                bikeImageContainer.style.display = 'block';
+            }
+
+            // Update UI with calculated values
+            document.getElementById('rentalDescription').textContent = `${bike.name} (${calcDays} days)`;
+            document.getElementById('rentalAmount').textContent = `₹${calcBasePrice.toLocaleString()}`;
+            document.getElementById('codAmount').textContent = calcTotal.toLocaleString();
+            document.getElementById('upiAmount').textContent = calcTotal.toLocaleString();
+
+            if (calcInsurance > 0) {
+                document.getElementById('insuranceRow').style.display = 'flex';
+                document.getElementById('insuranceAmount').textContent = `₹${calcInsurance.toLocaleString()}`;
+            }
+
+            if (calcGps > 0) {
+                document.getElementById('gpsRow').style.display = 'flex';
+                document.getElementById('gpsAmount').textContent = `₹${calcGps.toLocaleString()}`;
+            }
+
+            document.getElementById('gstRow').style.display = 'flex';
+            document.getElementById('gstAmount').textContent = `₹${calcGst.toLocaleString()}`;
+            document.getElementById('totalAmountDisplay').textContent = `₹${calcTotal.toLocaleString()}`;
+            
+            window.bookingTotal = calcTotal;
+            console.log('✅ Payment page loaded with calculated values');
+        }
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove active from all
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.payment-form-section').forEach(f => f.classList.remove('active'));
+                
+                // Add active to clicked
+                this.classList.add('active');
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Show corresponding form
+                const methodType = this.dataset.method;
+                document.getElementById(methodType + 'Form').classList.add('active');
+            });
+        });
+
+        // Confirm payment
+        document.getElementById('confirmPayment').addEventListener('click', function() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            
+            if (selectedMethod === 'upi') {
+                const upiId = document.getElementById('upiId').value;
+                if (!upiId) {
+                    alert('Please enter your UPI ID or Phone Number');
+                    return;
+                }
+            }
+            
+            // Build confirmation URL with all parameters
+            let confirmUrl = 'booking-confirmation.html';
+            
+            if (window.bookingParams && window.bookingTotal) {
+                const params = new URLSearchParams(window.bookingParams);
+                params.set('totalAmount', window.bookingTotal);
+                params.set('paymentMethod', selectedMethod);
+                
+                // Add bike name for display
+                const bikeId = params.get('bike');
+                const bike = getBikeById(bikeId);
+                if (bike) {
+                    params.set('bikeName', bike.name);
+                    params.set('bikeImage', bike.image);
+                }
+                
+                confirmUrl += '?' + params.toString();
+            }
+            
+            console.log('Redirecting to confirmation with URL:', confirmUrl);
+            window.location.href = confirmUrl;
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>

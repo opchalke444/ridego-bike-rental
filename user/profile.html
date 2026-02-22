@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Profile Picture Upload */
+        .profile-picture-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-picture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .profile-picture:hover .profile-picture-overlay {
+            opacity: 1;
+        }
+
+        .profile-picture-overlay span {
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .profile-upload-input {
+            display: none;
+        }
+
+        .profile-header-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-header-info h3 {
+            font-size: 1.75rem;
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-header-info .member-since {
+            color: #6B7280;
+            font-size: 0.938rem;
+        }
+
+        /* Change Profile Picture Button */
+        .change-picture-btn {
+            background: white;
+            border: 2px dashed #D1D5DB;
+            color: #6B7280;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .change-picture-btn:hover {
+            border-color: #2563EB;
+            color: #2563EB;
+            background: #EFF6FF;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .checkbox-group:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            accent-color: #2563EB;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            flex: 1;
+            color: #374151;
+            font-size: 0.938rem;
+        }
+
+        /* Success message */
+        .success-message {
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.875rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Delete account section styling */
+        .delete-account-section {
+            border: 2px solid #FEE2E2;
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #FEF2F2;
+        }
+
+        .delete-account-section h3 {
+            color: #991B1B;
+            margin-bottom: 0.75rem;
+        }
+
+        .delete-account-section p {
+            color: #B91C1C;
+            margin-bottom: 1rem;
+        }
+
+        .btn-danger {
+            background: #DC2626;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Profile Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">My Profile</h2>
+                <p class="section-subtitle">Manage your account information and preferences</p>
+            </div>
+
+            <div class="form-row">
+                <!-- Left Side - Profile Information -->
+                <div>
+                    <!-- Profile Picture Card -->
+                    <div class="feature-card text-center mb-3">
+                        <div class="profile-picture-wrapper">
+                            <div class="profile-picture" id="profilePicture">
+                                <img src="" alt="" id="profileImage" style="display: none;">
+                                <span id="profileInitial">👤</span>
+                                <div class="profile-picture-overlay">
+                                    <span>📷 Change</span>
+                                </div>
+                            </div>
+                            <input type="file" id="profileUploadInput" class="profile-upload-input" accept="image/*">
+                        </div>
+                        
+                        <div class="profile-header-info">
+                            <h3 id="profileName">Rahul Kumar</h3>
+                        </div>
+
+                        <label for="profileUploadInput" class="change-picture-btn">
+                            Change Profile Picture
+                        </label>
+                    </div>
+
+                    <!-- Personal Information Form -->
+                    <div class="feature-card">
+                        <h3 class="mb-3">Personal Information</h3>
+                        <div id="personalInfoSuccess" class="success-message">
+                            ✓ Profile updated successfully!
+                        </div>
+                        <form id="personalInfoForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" id="firstName" class="form-control" value="Rahul" readonly style="background-color: #F3F4F6; cursor: not-allowed;">
+                                    <small style="color: #6B7280; font-size: 0.75rem; margin-top: 0.25rem; display: block;">This field cannot be changed</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" id="lastName" class="form-control" value="Kumar" readonly style="background-color: #F3F4F6; cursor: not-allowed;">
+                                    <small style="color: #6B7280; font-size: 0.75rem; margin-top: 0.25rem; display: block;">This field cannot be changed</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email Address <span class="required">*</span></label>
+                                <input type="email" id="email" class="form-control" value="rahul.kumar@email.com" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Phone Number <span class="required">*</span></label>
+                                    <input type="tel" id="phone" class="form-control" value="+91 9876543210" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date of Birth</label>
+                                    <input type="date" id="dob" class="form-control" value="1995-05-15" readonly style="background-color: #F3F4F6; cursor: not-allowed;">
+                                    <small style="color: #6B7280; font-size: 0.75rem; margin-top: 0.25rem; display: block;">This field cannot be changed</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="address" class="form-control" rows="3" placeholder="Enter your address">MG Road, Bengaluru, Karnataka - 560001</textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+                        </form>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="feature-card mt-3">
+                        <h3 class="mb-3">Upload Documents</h3>
+                        <p class="section-subtitle mb-3" style="font-size: 0.875rem;">Upload your documents for admin verification</p>
+                        
+                        <div class="stat-card mb-3">
+                            <div class="vehicle-details">
+                                <span><strong>Driving License</strong></span>
+                                <span class="feature-badge" id="licenseStatus" style="background: #FEF3C7; color: #92400E;">Pending Verification</span>
+                            </div>
+                            <p class="mt-2" id="licenseNumber">No document uploaded</p>
+                            <p id="licenseValidity" style="display: none;">Valid Until: Dec 2030</p>
+                            <input type="file" id="licenseUpload" accept="image/*,.pdf" style="display: none;">
+                            <button class="btn btn-primary btn-small mt-2" onclick="document.getElementById('licenseUpload').click()">Upload License</button>
+                            <span id="licenseFileName" style="display: block; margin-top: 0.5rem; font-size: 0.875rem; color: #6B7280;"></span>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="vehicle-details">
+                                <span><strong>Aadhar Card</strong></span>
+                                <span class="feature-badge" id="aadharStatus" style="background: #FEF3C7; color: #92400E;">Pending Verification</span>
+                            </div>
+                            <p class="mt-2" id="aadharNumber">No document uploaded</p>
+                            <input type="file" id="aadharUpload" accept="image/*,.pdf" style="display: none;">
+                            <button class="btn btn-primary btn-small mt-2" onclick="document.getElementById('aadharUpload').click()">Upload Aadhar</button>
+                            <span id="aadharFileName" style="display: block; margin-top: 0.5rem; font-size: 0.875rem; color: #6B7280;"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Settings & Preferences -->
+                <div>
+                    <!-- Notification Preferences Section Removed -->
+
+                    <!-- Emergency Contact Section Removed -->
+
+                    <!-- Security Settings -->
+                    <div class="feature-card mb-3">
+                        <h3 class="mb-3">Security Settings</h3>
+                        <div id="passwordSuccess" class="success-message">
+                            ✓ Password changed successfully!
+                        </div>
+                        
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+                            </div>
+
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-2">Change Password</button>
+                        </form>
+                    </div>
+
+                    <!-- Delete Account -->
+                    <div class="feature-card">
+                        <div class="delete-account-section">
+                            <h3>Delete Account</h3>
+                            <p>Once you delete your account, there is no going back. All your data will be permanently deleted immediately.</p>
+                            <button class="btn btn-danger" onclick="deleteAccount()">Delete My Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize data from localStorage or use defaults
+        function initializeProfile() {
+            const savedData = localStorage.getItem('userProfile');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Load personal info
+                document.getElementById('firstName').value = data.firstName || 'Rahul';
+                document.getElementById('lastName').value = data.lastName || 'Kumar';
+                document.getElementById('email').value = data.email || 'rahul.kumar@email.com';
+                document.getElementById('phone').value = data.phone || '+91 9876543210';
+                document.getElementById('dob').value = data.dob || '1995-05-15';
+                document.getElementById('address').value = data.address || 'MG Road, Bengaluru, Karnataka - 560001';
+                
+                // Update profile name
+                document.getElementById('profileName').textContent = `${data.firstName || 'Rahul'} ${data.lastName || 'Kumar'}`;
+                
+                // Load profile picture
+                if (data.profilePicture) {
+                    document.getElementById('profileImage').src = data.profilePicture;
+                    document.getElementById('profileImage').style.display = 'block';
+                    document.getElementById('profileInitial').style.display = 'none';
+                }
+                
+                // Load notification preferences
+                document.getElementById('email-notif').checked = data.emailNotif !== false;
+                document.getElementById('sms-notif').checked = data.smsNotif !== false;
+                document.getElementById('promo-notif').checked = data.promoNotif || false;
+                document.getElementById('booking-notif').checked = data.bookingNotif !== false;
+                document.getElementById('reminder-notif').checked = data.reminderNotif !== false;
+                
+                // Load emergency contact
+                if (data.emergencyContact) {
+                    document.getElementById('emergencyName').value = data.emergencyContact.name || 'Priya Kumar';
+                    document.getElementById('emergencyPhone').value = data.emergencyContact.phone || '+91 9876543211';
+                    document.getElementById('emergencyRelation').value = data.emergencyContact.relation || 'spouse';
+                }
+                
+                // Load documents
+                if (data.documents) {
+                    if (data.documents.license) {
+                        document.getElementById('licenseFileName').textContent = `Uploaded: ${data.documents.license.fileName}`;
+                        document.getElementById('licenseFileName').style.display = 'block';
+                        document.getElementById('licenseNumber').textContent = 'Document uploaded - pending admin verification';
+                    }
+                    if (data.documents.aadhar) {
+                        document.getElementById('aadharFileName').textContent = `Uploaded: ${data.documents.aadhar.fileName}`;
+                        document.getElementById('aadharFileName').style.display = 'block';
+                        document.getElementById('aadharNumber').textContent = 'Document uploaded - pending admin verification';
+                    }
+                }
+            }
+        }
+
+        // Save profile data to localStorage
+        function saveProfileData() {
+            const existingData = JSON.parse(localStorage.getItem('userProfile')) || {};
+            const data = {
+                ...existingData,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value,
+                address: document.getElementById('address').value,
+                profilePicture: document.getElementById('profileImage').src || null,
+                emailNotif: document.getElementById('email-notif').checked,
+                smsNotif: document.getElementById('sms-notif').checked,
+                promoNotif: document.getElementById('promo-notif').checked,
+                bookingNotif: document.getElementById('booking-notif').checked,
+                reminderNotif: document.getElementById('reminder-notif').checked,
+                emergencyContact: {
+                    name: document.getElementById('emergencyName').value,
+                    phone: document.getElementById('emergencyPhone').value,
+                    relation: document.getElementById('emergencyRelation').value
+                }
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(data));
+        }
+
+        // Profile Picture Upload
+        const profileUploadInput = document.getElementById('profileUploadInput');
+        const profilePicture = document.getElementById('profilePicture');
+        const profileImage = document.getElementById('profileImage');
+        const profileInitial = document.getElementById('profileInitial');
+
+        profilePicture.addEventListener('click', () => {
+            profileUploadInput.click();
+        });
+
+        profileUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profileImage.src = e.target.result;
+                    profileImage.style.display = 'block';
+                    profileInitial.style.display = 'none';
+                    saveProfileData();
+                    showSuccessMessage('personalInfoSuccess', 'Profile picture updated and saved!');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // License Upload
+        document.getElementById('licenseUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const savedData = JSON.parse(localStorage.getItem('userProfile')) || {};
+                    savedData.documents = savedData.documents || {};
+                    savedData.documents.license = {
+                        fileName: file.name,
+                        fileData: e.target.result,
+                        uploadedDate: new Date().toISOString()
+                    };
+                    localStorage.setItem('userProfile', JSON.stringify(savedData));
+                    
+                    document.getElementById('licenseFileName').textContent = `Uploaded: ${file.name}`;
+                    document.getElementById('licenseFileName').style.display = 'block';
+                    document.getElementById('licenseNumber').textContent = 'Document uploaded - pending admin verification';
+                    
+                    alert('✓ License uploaded successfully!\n\nYour document has been saved and is pending admin verification.');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Aadhar Upload
+        document.getElementById('aadharUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const savedData = JSON.parse(localStorage.getItem('userProfile')) || {};
+                    savedData.documents = savedData.documents || {};
+                    savedData.documents.aadhar = {
+                        fileName: file.name,
+                        fileData: e.target.result,
+                        uploadedDate: new Date().toISOString()
+                    };
+                    localStorage.setItem('userProfile', JSON.stringify(savedData));
+                    
+                    document.getElementById('aadharFileName').textContent = `Uploaded: ${file.name}`;
+                    document.getElementById('aadharFileName').style.display = 'block';
+                    document.getElementById('aadharNumber').textContent = 'Document uploaded - pending admin verification';
+                    
+                    alert('✓ Aadhar uploaded successfully!\n\nYour document has been saved and is pending admin verification.');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Personal Information Form
+        document.getElementById('personalInfoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            
+            // Update profile name
+            document.getElementById('profileName').textContent = `${firstName} ${lastName}`;
+            
+            // Save to localStorage
+            saveProfileData();
+            
+            // Show success message
+            showSuccessMessage('personalInfoSuccess');
+            
+            console.log('✓ Personal info saved permanently to localStorage');
+        });
+
+        // Notification Preferences Form
+        document.getElementById('notificationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Save to localStorage
+            saveProfileData();
+            
+            showSuccessMessage('notificationSuccess');
+            
+            console.log('✓ Notification preferences saved permanently to localStorage');
+        });
+
+        // Emergency Contact Form
+        document.getElementById('emergencyForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Save to localStorage
+            saveProfileData();
+            
+            showSuccessMessage('emergencySuccess');
+            
+            console.log('✓ Emergency contact saved permanently to localStorage');
+        });
+
+        // Password Change Form
+        document.getElementById('passwordForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword) {
+                alert('⚠️ Please enter your current password!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('⚠️ New passwords do not match!');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('⚠️ Password must be at least 8 characters long!');
+                return;
+            }
+            
+            // Save password to localStorage
+            const savedData = JSON.parse(localStorage.getItem('userProfile')) || {};
+            savedData.password = newPassword;
+            savedData.passwordUpdatedDate = new Date().toISOString();
+            localStorage.setItem('userProfile', JSON.stringify(savedData));
+            
+            showSuccessMessage('passwordSuccess');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            console.log('✓ Password saved permanently to localStorage');
+        });
+
+        // Delete Account Function
+        function deleteAccount() {
+            const confirmed = confirm('⚠️ WARNING: Delete Account?\n\nAre you absolutely sure you want to delete your account?\n\nThis action will:\n• Permanently delete all your data IMMEDIATELY\n• Cancel all active bookings\n• Remove all your documents\n• Cannot be undone\n\nClick OK to proceed with deletion.');
+            
+            if (confirmed) {
+                const doubleConfirm = confirm('🚨 FINAL CONFIRMATION\n\nThis is your last chance!\n\nYour account will be deleted RIGHT NOW and PERMANENTLY.\n\nThere is NO going back!\n\nAre you 100% absolutely certain?');
+                
+                if (doubleConfirm) {
+                    // Clear all user data from localStorage
+                    localStorage.removeItem('userProfile');
+                    
+                    // Show deletion message
+                    alert('✓ Account Deleted Successfully\n\nYour account and all associated data have been permanently deleted.\n\nYou will now be redirected to the home page.');
+                    
+                    // Redirect to home page
+                    window.location.href = '../index.html';
+                }
+            }
+        }
+
+        // Helper function to show success messages
+        function showSuccessMessage(elementId, customMessage = null) {
+            const element = document.getElementById(elementId);
+            if (customMessage) {
+                element.textContent = '✓ ' + customMessage;
+            }
+            element.classList.add('show');
+            
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize profile on page load
+        document.addEventListener('DOMContentLoaded', initializeProfile);
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

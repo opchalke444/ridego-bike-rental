@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - RideGo Vendor</title>
+    <meta name="description" content="Manage your vendor profile on RideGo.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Vendor Portal</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="vendor-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="vendor-bikes.html"><span class="nav-icon">🏍️</span> My Bikes</a>
+                <a href="vendor-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="vendor-earnings.html"><span class="nav-icon">💰</span> Earnings</a>
+                <a href="vendor-profile.html" class="active"><span class="nav-icon">👤</span> Profile</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>My Profile</h1>
+                    <p>View and update your vendor information</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">V</div>
+                        <span id="vendorName">Vendor</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Profile Card -->
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: start;">
+
+                    <!-- Avatar / Summary -->
+                    <div class="dashboard-table-wrap" style="text-align: center; padding: 2.5rem 2rem;">
+                        <div
+                            style="width: 100px; height: 100px; border-radius: 50%; background: var(--gradient-primary); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; margin: 0 auto 1.25rem;">
+                            <span id="profileInitials">V</span>
+                        </div>
+                        <h3 id="profileFullName" style="font-size: 1.3rem; margin-bottom: 0.3rem;">Vendor</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;" id="profileEmail">
+                            vendor@demo.com</p>
+                        <span class="status-badge status-approved" id="profileStatus">Active</span>
+                        <div
+                            style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--lighter-gray); display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);"
+                                    id="profileBikeCount">0</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Bikes Listed</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);"
+                                    id="profileBookingCount">0</div>
+                                <div style="font-size: 0.8rem; color: var(--gray);">Total Bookings</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form -->
+                    <div class="dashboard-table-wrap" style="padding: 2rem;">
+                        <h3
+                            style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span
+                                style="width: 4px; height: 20px; background: var(--gradient-primary); border-radius: 2px; display: inline-block;"></span>
+                            Edit Profile
+                        </h3>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" class="form-control" id="firstName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" class="form-control" id="lastName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" id="email" disabled
+                                    style="background: var(--light-gray); cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Business Name</label>
+                                <input type="text" class="form-control" id="businessName">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" class="form-control" id="city">
+                                </div>
+                                <div class="form-group">
+                                    <label>State</label>
+                                    <input type="text" class="form-control" id="state">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea class="form-control" id="address" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit" style="margin-top: 0.5rem;">Save Changes</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- Change Password -->
+                <div class="dashboard-table-wrap" style="padding: 2rem; margin-top: 2rem; max-width: 500px;">
+                    <h3
+                        style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span
+                            style="width: 4px; height: 20px; background: var(--gradient-sunset); border-radius: 2px; display: inline-block;"></span>
+                        Change Password
+                    </h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn-submit"
+                            style="background: var(--accent); box-shadow: 0 10px 25px rgba(245,158,11,0.3);">Update
+                            Password</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser && currentUser.role !== 'vendor') { alert('Access denied.'); window.location.href = '../index.html'; }
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        const vendorId = currentUser ? currentUser.id : 'V1';
+
+        function loadProfile() {
+            if (!currentUser) return;
+
+            const initials = ((currentUser.firstName || 'V')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+            document.getElementById('avatarInitials').textContent = initials;
+            document.getElementById('profileInitials').textContent = initials;
+            document.getElementById('vendorName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Vendor';
+            document.getElementById('profileFullName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim();
+            document.getElementById('profileEmail').textContent = currentUser.email || '';
+
+            // Form pre-fill
+            document.getElementById('firstName').value = currentUser.firstName || '';
+            document.getElementById('lastName').value = currentUser.lastName || '';
+            document.getElementById('email').value = currentUser.email || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('businessName').value = currentUser.businessName || '';
+            document.getElementById('city').value = currentUser.city || '';
+            document.getElementById('state').value = currentUser.state || '';
+            document.getElementById('address').value = currentUser.address || '';
+
+            // Stats
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]').filter(b => b.vendorId === vendorId);
+            const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]').filter(b => b.vendorId === vendorId);
+            document.getElementById('profileBikeCount').textContent = bikes.length;
+            document.getElementById('profileBookingCount').textContent = bookings.length;
+        }
+
+        // Save profile
+        document.getElementById('profileForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) {
+                users[idx].firstName = document.getElementById('firstName').value.trim();
+                users[idx].lastName = document.getElementById('lastName').value.trim();
+                users[idx].phone = document.getElementById('phone').value.trim();
+                users[idx].businessName = document.getElementById('businessName').value.trim();
+                users[idx].city = document.getElementById('city').value.trim();
+                users[idx].state = document.getElementById('state').value.trim();
+                users[idx].address = document.getElementById('address').value.trim();
+                localStorage.setItem('ridego_users', JSON.stringify(users));
+                localStorage.setItem('ridego_session', JSON.stringify(users[idx]));
+                alert('Profile updated successfully!');
+                loadProfile();
+            }
+        });
+
+        // Change password
+        document.getElementById('passwordForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const curr = document.getElementById('currentPassword').value;
+            const newP = document.getElementById('newPassword').value;
+            const conf = document.getElementById('confirmPassword').value;
+
+            if (newP.length < 6) { alert('Password must be at least 6 characters.'); return; }
+            if (newP !== conf) { alert('Passwords do not match.'); return; }
+
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            const idx = users.findIndex(u => u.id === currentUser.id);
+            if (idx !== -1) {
+                if (users[idx].password !== curr) { alert('Current password is incorrect.'); return; }
+                users[idx].password = newP;
+                localStorage.setItem('ridego_users', JSON.stringify(users));
+                alert('Password changed successfully!');
+                document.getElementById('passwordForm').reset();
+            }
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+
+        loadProfile();
+    </script>
+
+    <style>
+        /* Profile page responsive override */
+        @media (max-width: 768px) {
+            .dashboard-content>div:first-child {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

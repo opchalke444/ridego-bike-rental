@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard - RideGo</title>
+    <meta name="description" content="Manage your bike listings, bookings, and earnings on RideGo Vendor Dashboard.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Vendor Portal</small></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="vendor-dashboard.html" class="active">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="vendor-bikes.html">
+                    <span class="nav-icon">🏍️</span> My Bikes
+                </a>
+                <a href="vendor-bookings.html">
+                    <span class="nav-icon">📅</span> Bookings
+                </a>
+                <a href="vendor-earnings.html">
+                    <span class="nav-icon">💰</span> Earnings
+                </a>
+                <a href="vendor-profile.html">
+                    <span class="nav-icon">👤</span> Profile
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink">
+                    <span class="nav-icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN AREA ===== -->
+        <div class="dashboard-main">
+
+            <!-- Top Bar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Vendor Dashboard</h1>
+                    <p>Manage your bikes, bookings & earnings</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="dash-btn-add" id="addBikeBtn">➕ Add New Bike</button>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">V</div>
+                        <span id="vendorName">Vendor</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+
+                <!-- Summary Cards -->
+                <div class="dashboard-cards-grid" id="summaryCards">
+                    <div class="dashboard-card card-blue">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Total Bikes</div>
+                                <div class="card-value" id="totalBikes">0</div>
+                            </div>
+                            <div class="card-icon">🏍️</div>
+                        </div>
+                        <div class="card-sub" id="availableBikes">0 available</div>
+                    </div>
+                    <div class="dashboard-card card-amber">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Active Bookings</div>
+                                <div class="card-value" id="activeBookings">0</div>
+                            </div>
+                            <div class="card-icon">📅</div>
+                        </div>
+                        <div class="card-sub" id="pendingBookings">0 pending approval</div>
+                    </div>
+                    <div class="dashboard-card card-green">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Total Earnings</div>
+                                <div class="card-value" id="totalEarnings">₹0</div>
+                            </div>
+                            <div class="card-icon">💰</div>
+                        </div>
+                        <div class="card-sub">Lifetime revenue</div>
+                    </div>
+                </div>
+
+                <!-- My Bikes Section -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>My Bikes</h2>
+                        <button class="dash-btn-add" id="addBikeBtnAlt"
+                            style="padding: 0.5rem 1rem; font-size: 0.85rem;">➕ Add Bike</button>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="bikesTableBody">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>Recent Booking Requests</h2>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="bookingsTableBody">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /dashboard-content -->
+        </div><!-- /dashboard-main -->
+    </div><!-- /dashboard-wrap -->
+
+    <!-- ===== ADD NEW BIKE MODAL ===== -->
+    <div class="modal-overlay" id="addBikeModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Add New Bike</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addBikeForm">
+                    <div class="form-group">
+                        <label>Bike Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="bikeName" placeholder="e.g. Royal Enfield Himalayan"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category <span class="required">*</span></label>
+                            <select class="form-control" id="bikeCategory" required>
+                                <option value="">Select category</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Cruiser">Cruiser</option>
+                                <option value="Sport">Sport</option>
+                                <option value="Scooter">Scooter</option>
+                                <option value="Commuter">Commuter</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Daily Rate (₹) <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="bikeRate" placeholder="e.g. 1500" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Engine (CC)</label>
+                            <input type="number" class="form-control" id="bikeCC" placeholder="e.g. 411">
+                        </div>
+                        <div class="form-group">
+                            <label>Fuel Type</label>
+                            <select class="form-control" id="bikeFuel">
+                                <option value="Petrol">Petrol</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Transmission</label>
+                            <select class="form-control" id="bikeTransmission">
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination <span class="required">*</span></label>
+                            <select class="form-control" id="bikeDestination" required>
+                                <option value="">Select destination</option>
+                                <option value="goa">Goa</option>
+                                <option value="manali">Manali</option>
+                                <option value="leh-ladakh">Leh-Ladakh</option>
+                                <option value="jaipur">Jaipur</option>
+                                <option value="pondicherry">Pondicherry</option>
+                                <option value="udaipur">Udaipur</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" id="bikeDescription" rows="3"
+                            placeholder="Brief description of the bike..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-small" id="cancelModalBtn">Cancel</button>
+                <button class="btn btn-primary btn-small" id="submitBikeBtn">Add Bike</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+
+    <script>
+        // ===== Auth Guard =====
+        if (!AuthService.isAuthenticated()) {
+            window.location.href = '../login.html';
+        }
+
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser && currentUser.role !== 'vendor') {
+            alert('Access denied. Vendor privileges required.');
+            window.location.href = '../index.html';
+        }
+
+        // ===== Populate User Info =====
+        if (currentUser) {
+            document.getElementById('vendorName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Vendor';
+            const initials = ((currentUser.firstName || 'V')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+            document.getElementById('avatarInitials').textContent = initials || 'V';
+        }
+
+        // ===== Sidebar Toggle (Mobile) =====
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('show');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('show');
+        });
+
+        // ===== Initialize Demo Data =====
+        function initVendorDemoData() {
+            const vendorId = currentUser ? currentUser.id : 'V1';
+
+            if (!localStorage.getItem('ridego_vendor_bikes_init')) {
+                const existing = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+                const vendorBikes = existing.filter(b => b.vendorId === vendorId);
+
+                if (vendorBikes.length === 0) {
+                    const demoBikes = [
+                        {
+                            id: 'vb-001',
+                            vendorId: vendorId,
+                            name: 'Royal Enfield Classic 350',
+                            category: 'Cruiser',
+                            dailyRate: 1200,
+                            cc: 349,
+                            fuelType: 'Petrol',
+                            transmission: 'Manual',
+                            destination: 'goa',
+                            approvalStatus: 'approved',
+                            available: true,
+                            createdAt: new Date(Date.now() - 20 * 86400000).toISOString()
+                        },
+                        {
+                            id: 'vb-002',
+                            vendorId: vendorId,
+                            name: 'Honda Activa 6G',
+                            category: 'Scooter',
+                            dailyRate: 500,
+                            cc: 109,
+                            fuelType: 'Petrol',
+                            transmission: 'Automatic',
+                            destination: 'goa',
+                            approvalStatus: 'approved',
+                            available: true,
+                            createdAt: new Date(Date.now() - 15 * 86400000).toISOString()
+                        },
+                        {
+                            id: 'vb-003',
+                            vendorId: vendorId,
+                            name: 'KTM Duke 200',
+                            category: 'Sport',
+                            dailyRate: 1800,
+                            cc: 200,
+                            fuelType: 'Petrol',
+                            transmission: 'Manual',
+                            destination: 'manali',
+                            approvalStatus: 'approved',
+                            available: false,
+                            createdAt: new Date(Date.now() - 10 * 86400000).toISOString()
+                        },
+                        {
+                            id: 'vb-004',
+                            vendorId: vendorId,
+                            name: 'Bajaj Pulsar NS200',
+                            category: 'Sport',
+                            dailyRate: 1500,
+                            cc: 200,
+                            fuelType: 'Petrol',
+                            transmission: 'Manual',
+                            destination: 'jaipur',
+                            approvalStatus: 'pending',
+                            available: true,
+                            createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
+                        }
+                    ];
+                    const allBikes = [...existing, ...demoBikes];
+                    localStorage.setItem('ridego_bikes', JSON.stringify(allBikes));
+                }
+                localStorage.setItem('ridego_vendor_bikes_init', 'true');
+            }
+
+            // Demo bookings for vendor's bikes
+            if (!localStorage.getItem('ridego_vendor_bookings_init')) {
+                const existingBookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+                const demoBookings = [
+                    {
+                        id: 'BK-V001',
+                        bikeId: 'vb-001',
+                        bikeName: 'Royal Enfield Classic 350',
+                        vendorId: vendorId,
+                        userId: 'U1',
+                        userName: 'Arjun Mehra',
+                        startDate: new Date(Date.now() + 2 * 86400000).toISOString(),
+                        endDate: new Date(Date.now() + 5 * 86400000).toISOString(),
+                        total: 3600,
+                        status: 'pending',
+                        paymentStatus: 'completed',
+                        destination: 'Goa',
+                        createdAt: new Date(Date.now() - 1 * 86400000).toISOString()
+                    },
+                    {
+                        id: 'BK-V002',
+                        bikeId: 'vb-003',
+                        bikeName: 'KTM Duke 200',
+                        vendorId: vendorId,
+                        userId: 'U2',
+                        userName: 'Priya Sharma',
+                        startDate: new Date(Date.now() - 3 * 86400000).toISOString(),
+                        endDate: new Date(Date.now() + 1 * 86400000).toISOString(),
+                        total: 7200,
+                        status: 'active',
+                        paymentStatus: 'completed',
+                        destination: 'Manali',
+                        createdAt: new Date(Date.now() - 4 * 86400000).toISOString()
+                    },
+                    {
+                        id: 'BK-V003',
+                        bikeId: 'vb-002',
+                        bikeName: 'Honda Activa 6G',
+                        vendorId: vendorId,
+                        userId: 'U3',
+                        userName: 'Rahul Verma',
+                        startDate: new Date(Date.now() + 7 * 86400000).toISOString(),
+                        endDate: new Date(Date.now() + 10 * 86400000).toISOString(),
+                        total: 1500,
+                        status: 'pending',
+                        paymentStatus: 'pending',
+                        destination: 'Goa',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                const allBookings = [...existingBookings, ...demoBookings];
+                localStorage.setItem('ridego_bookings', JSON.stringify(allBookings));
+                localStorage.setItem('ridego_vendor_bookings_init', 'true');
+            }
+        }
+
+        // ===== Load Dashboard =====
+        function loadVendorDashboard() {
+            initVendorDemoData();
+            const vendorId = currentUser ? currentUser.id : 'V1';
+
+            const allBikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const myBikes = allBikes.filter(b => b.vendorId === vendorId);
+            const approvedBikes = myBikes.filter(b => b.approvalStatus === 'approved');
+            const availableBikes = approvedBikes.filter(b => b.available);
+
+            const allBookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            const myBookings = allBookings.filter(b => b.vendorId === vendorId);
+            const activeBookings = myBookings.filter(b => b.status === 'active' || b.status === 'confirmed');
+            const pendingBookings = myBookings.filter(b => b.status === 'pending');
+            const earnings = myBookings
+                .filter(b => b.paymentStatus === 'completed')
+                .reduce((sum, b) => sum + (b.total || 0), 0);
+
+            // Update cards
+            document.getElementById('totalBikes').textContent = myBikes.length;
+            document.getElementById('availableBikes').textContent = `${availableBikes.length} available`;
+            document.getElementById('activeBookings').textContent = activeBookings.length;
+            document.getElementById('pendingBookings').textContent = `${pendingBookings.length} pending approval`;
+            document.getElementById('totalEarnings').textContent = `₹${earnings.toLocaleString()}`;
+
+            // Render tables
+            renderBikesTable(myBikes);
+            renderBookingsTable(myBookings);
+        }
+
+        function renderBikesTable(bikes) {
+            const container = document.getElementById('bikesTableBody');
+
+            if (bikes.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">🏍️</div><p>No bikes listed yet. Add your first bike!</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table">
+                <thead><tr>
+                    <th>Bike Name</th>
+                    <th>Category</th>
+                    <th>Daily Rate</th>
+                    <th>Destination</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr></thead><tbody>`;
+
+            bikes.forEach(bike => {
+                let statusClass, statusText;
+                if (bike.approvalStatus === 'pending') {
+                    statusClass = 'status-pending';
+                    statusText = 'Pending Approval';
+                } else if (!bike.available) {
+                    statusClass = 'status-rented';
+                    statusText = 'Rented';
+                } else {
+                    statusClass = 'status-available';
+                    statusText = 'Available';
+                }
+
+                html += `<tr>
+                    <td><strong>${bike.name}</strong></td>
+                    <td>${bike.category}</td>
+                    <td>₹${bike.dailyRate.toLocaleString()}</td>
+                    <td style="text-transform: capitalize;">${bike.destination}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="dash-btn dash-btn-edit" onclick="editBike('${bike.id}')">✏️ Edit</button>
+                        <button class="dash-btn dash-btn-delete" onclick="deleteBike('${bike.id}')">🗑️ Delete</button>
+                    </td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderBookingsTable(bookings) {
+            const container = document.getElementById('bookingsTableBody');
+            const recent = bookings.slice(-6).reverse();
+
+            if (recent.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">📅</div><p>No booking requests yet.</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table">
+                <thead><tr>
+                    <th>Booking ID</th>
+                    <th>Customer</th>
+                    <th>Bike</th>
+                    <th>Dates</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr></thead><tbody>`;
+
+            recent.forEach(booking => {
+                const start = new Date(booking.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const end = new Date(booking.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const statusClass = `status-${booking.status}`;
+
+                const actions = booking.status === 'pending'
+                    ? `<button class="dash-btn dash-btn-approve" onclick="approveBooking('${booking.id}')">✓ Approve</button>
+                       <button class="dash-btn dash-btn-reject" onclick="rejectBooking('${booking.id}')">✗ Reject</button>`
+                    : `<span style="color: var(--gray); font-size: 0.82rem;">—</span>`;
+
+                html += `<tr>
+                    <td><strong>${booking.id}</strong></td>
+                    <td>${booking.userName}</td>
+                    <td>${booking.bikeName}</td>
+                    <td>${start} – ${end}</td>
+                    <td>₹${booking.total.toLocaleString()}</td>
+                    <td><span class="status-badge ${statusClass}" style="text-transform: capitalize;">${booking.status}</span></td>
+                    <td>${actions}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ===== Actions =====
+        function editBike(bikeId) {
+            alert(`Edit functionality for bike ${bikeId} would open a pre-filled form.`);
+        }
+
+        function deleteBike(bikeId) {
+            if (!confirm('Are you sure you want to delete this bike listing?')) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const updated = bikes.filter(b => b.id !== bikeId);
+            localStorage.setItem('ridego_bikes', JSON.stringify(updated));
+            loadVendorDashboard();
+        }
+
+        function approveBooking(bookingId) {
+            if (!confirm('Approve this booking request?')) return;
+            const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            const idx = bookings.findIndex(b => b.id === bookingId);
+            if (idx !== -1) {
+                bookings[idx].status = 'confirmed';
+                localStorage.setItem('ridego_bookings', JSON.stringify(bookings));
+                alert('Booking approved!');
+                loadVendorDashboard();
+            }
+        }
+
+        function rejectBooking(bookingId) {
+            if (!confirm('Reject this booking request?')) return;
+            const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            const idx = bookings.findIndex(b => b.id === bookingId);
+            if (idx !== -1) {
+                bookings[idx].status = 'cancelled';
+                localStorage.setItem('ridego_bookings', JSON.stringify(bookings));
+                alert('Booking rejected.');
+                loadVendorDashboard();
+            }
+        }
+
+        // ===== Modal =====
+        const addBikeModal = document.getElementById('addBikeModal');
+
+        function openModal() {
+            addBikeModal.classList.add('show');
+        }
+        function closeModalFn() {
+            addBikeModal.classList.remove('show');
+            document.getElementById('addBikeForm').reset();
+        }
+
+        document.getElementById('addBikeBtn').addEventListener('click', openModal);
+        document.getElementById('addBikeBtnAlt').addEventListener('click', openModal);
+        document.getElementById('closeModal').addEventListener('click', closeModalFn);
+        document.getElementById('cancelModalBtn').addEventListener('click', closeModalFn);
+
+        addBikeModal.addEventListener('click', (e) => {
+            if (e.target === addBikeModal) closeModalFn();
+        });
+
+        document.getElementById('submitBikeBtn').addEventListener('click', () => {
+            const name = document.getElementById('bikeName').value.trim();
+            const category = document.getElementById('bikeCategory').value;
+            const rate = parseInt(document.getElementById('bikeRate').value);
+            const destination = document.getElementById('bikeDestination').value;
+
+            if (!name || !category || !rate || !destination) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const vendorId = currentUser ? currentUser.id : 'V1';
+            const newBike = {
+                id: 'vb-' + Date.now(),
+                vendorId: vendorId,
+                name: name,
+                category: category,
+                dailyRate: rate,
+                cc: parseInt(document.getElementById('bikeCC').value) || 0,
+                fuelType: document.getElementById('bikeFuel').value,
+                transmission: document.getElementById('bikeTransmission').value,
+                destination: destination,
+                description: document.getElementById('bikeDescription').value.trim(),
+                approvalStatus: 'pending',
+                available: true,
+                createdAt: new Date().toISOString()
+            };
+
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            bikes.push(newBike);
+            localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+
+            alert('Bike added successfully! It will be visible after admin approval.');
+            closeModalFn();
+            loadVendorDashboard();
+        });
+
+        // ===== Logout =====
+        document.getElementById('logoutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                AuthService.logout();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // ===== Init =====
+        loadVendorDashboard();
+    </script>
+
+</body>
+
+</html>

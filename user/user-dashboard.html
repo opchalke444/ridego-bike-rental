@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="section" style="padding-top: 150px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h1 class="section-title" id="welcomeMessage">Welcome Back, Traveler!</h1>
+                <p class="section-subtitle">Ready for your next adventure? Explore bikes and destinations.</p>
+            </div>
+
+            <!-- Active Bookings -->
+            <div class="mt-4">
+                <h3>My Recent Bookings</h3>
+                <div class="vehicles-grid mt-3" id="activeBookingsGrid">
+                    <!-- Bookings will be loaded dynamically -->
+                    <p id="noBookingsMessage" style="display: none; text-align: center; color: #6B7280; padding: 2rem;">
+                        No bookings yet. Start exploring bikes to create your first booking!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mt-4 text-center">
+                <h3 class="mb-3">Quick Actions</h3>
+                <div class="hero-buttons" style="justify-content: center;">
+                    <a href="search-bike.html" class="btn btn-primary btn-large">Search New Bikes</a>
+                    <a href="my-bookings.html" class="btn btn-secondary btn-large">View All Bookings</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script src="../assets/js/demo-bookings.js"></script>
+    <script>
+        // Load user's bookings on dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardBookings();
+        });
+
+        function loadDashboardBookings() {
+            const currentUser = AuthService.getCurrentUser();
+            if (!currentUser) return;
+
+            // Get all user bookings
+            const allBookings = BookingService.getUserBookings();
+            
+            // Show only recent 4 bookings
+            const recentBookings = allBookings.slice(0, 4);
+            
+            const grid = document.getElementById('activeBookingsGrid');
+            const noBookingsMsg = document.getElementById('noBookingsMessage');
+            
+            if (recentBookings.length === 0) {
+                grid.innerHTML = '';
+                noBookingsMsg.style.display = 'block';
+                return;
+            }
+            
+            noBookingsMsg.style.display = 'none';
+            
+            grid.innerHTML = recentBookings.map(booking => {
+                const statusBadge = getStatusBadge(booking.status);
+                return `
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/${booking.bikeImage || 'placeholder.png'}" 
+                                 alt="${booking.bikeName}"
+                                 onerror="this.src='../assets/images/vehicles/placeholder.png'">
+                        </div>
+                        <div class="vehicle-content">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <h4 class="vehicle-name">${booking.bikeName}</h4>
+                                ${statusBadge}
+                            </div>
+                            <p class="vehicle-category">${booking.bikeCategory || 'Bike'}</p>
+                            <div class="vehicle-details">
+                                <span><b>📍 ${booking.destination}</b></span>
+                                <span>📅 ${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}</span>
+                            </div>
+                            <div class="vehicle-footer">
+                                <span class="vehicle-price">₹${booking.totalAmount.toLocaleString()}</span>
+                                <a href="my-bookings.html" class="btn btn-primary btn-small">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'confirmed': '<span style="background: #D1FAE5; color: #059669; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Confirmed</span>',
+                'pending': '<span style="background: #FEF3C7; color: #D97706; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Pending</span>',
+                'completed': '<span style="background: #E0E7FF; color: #4F46E5; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Completed</span>',
+                'cancelled': '<span style="background: #FEE2E2; color: #DC2626; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">Cancelled</span>'
+            };
+            return badges[status] || badges['pending'];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+    </script>
+</body>
+</html>

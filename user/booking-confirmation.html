@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Success Animation */
+        .success-checkmark {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .success-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .success-tick {
+            font-size: 3.5rem;
+            color: white;
+            animation: tickAppear 0.3s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes tickAppear {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Confirmation Header */
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .confirmation-header h1 {
+            color: #059669;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .confirmation-header p {
+            font-size: 1.125rem;
+            color: #6B7280;
+        }
+
+        /* Booking ID Badge */
+        .booking-id-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-top: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Timeline Steps */
+        .timeline {
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 50px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: #E5E7EB;
+        }
+
+        .timeline-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-description {
+            color: #6B7280;
+            font-size: 0.938rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-card:hover {
+            border-color: #2563EB;
+            background: #EFF6FF;
+            transform: translateY(-2px);
+        }
+
+        .action-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-card-description {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        /* Important Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #DBEAFE 0%, #E0E7FF 100%);
+            border-left: 4px solid #2563EB;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .info-box-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-box-list li {
+            color: #1E40AF;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .info-box-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Contact Support */
+        .support-section {
+            background: #F9FAFB;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .support-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+
+        .support-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .support-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .support-button-primary {
+            background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+            color: white;
+        }
+
+        .support-button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .support-button-secondary {
+            background: white;
+            color: #2563EB;
+            border: 2px solid #2563EB;
+        }
+
+        .support-button-secondary:hover {
+            background: #EFF6FF;
+        }
+
+        /* Booking Summary Card */
+        .booking-summary {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .booking-summary-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .bike-image-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #F9FAFB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bike-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .bike-info {
+            flex: 1;
+        }
+
+        .bike-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .bike-category {
+            color: #6B7280;
+            font-size: 0.938rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #1F2937;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .total-row {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #E5E7EB;
+        }
+
+        .total-row .detail-label {
+            font-size: 1.125rem;
+            color: #1F2937;
+        }
+
+        .total-row .detail-value {
+            font-size: 1.5rem;
+            color: #2563EB;
+        }
+
+        /* Print Optimization */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .navbar, .footer {
+                display: none !important;
+            }
+            
+            .section {
+                padding-top: 20px !important;
+                padding-bottom: 20px !important;
+            }
+            
+            .success-checkmark {
+                margin: 0 auto 1rem;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .success-circle {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .success-tick {
+                font-size: 2rem;
+            }
+            
+            .confirmation-header {
+                margin-bottom: 1.5rem;
+            }
+            
+            .confirmation-header h1 {
+                font-size: 1.75rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .confirmation-header p {
+                font-size: 0.875rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .booking-id-badge {
+                padding: 0.5rem 1rem;
+                font-size: 0.938rem;
+                margin-top: 0.5rem;
+            }
+            
+            .booking-summary {
+                margin-top: 1rem;
+                padding: 1.25rem;
+            }
+            
+            .booking-summary-header {
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+            }
+            
+            .bike-image-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .bike-name {
+                font-size: 1.125rem;
+            }
+            
+            .detail-row {
+                padding: 0.5rem 0;
+                font-size: 0.875rem;
+            }
+            
+            .total-row {
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+            
+            .total-row .detail-label {
+                font-size: 1rem;
+            }
+            
+            .total-row .detail-value {
+                font-size: 1.25rem;
+            }
+            
+            .info-box {
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+            
+            .info-box-title {
+                font-size: 0.938rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .info-box-list li {
+                margin-bottom: 0.25rem;
+                font-size: 0.813rem;
+            }
+            
+            /* Hide non-billing sections in print */
+            .info-box {
+                display: none !important;
+            }
+            
+            .action-buttons {
+                display: none !important;
+            }
+        }
+
+        /* Reduce overall spacing for better single-page fit */
+        .section {
+            padding-top: 100px;
+            padding-bottom: 40px;
+        }
+        
+        .section-container {
+            max-width: 900px;
+        }
+        
+        .success-checkmark {
+            margin: 0 auto 1.5rem;
+        }
+        
+        .confirmation-header {
+            margin-bottom: 2rem;
+        }
+        
+        .booking-summary {
+            margin-top: 1.5rem;
+        }
+        
+        .info-box {
+            margin: 1.5rem 0;
+        }
+        
+        .action-buttons {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Confirmation Section -->
+    <section class="section">
+        <div class="section-container">
+            
+            <!-- Success Animation -->
+            <div class="success-checkmark">
+                <div class="success-circle">
+                    <div class="success-tick">✓</div>
+                </div>
+            </div>
+
+            <!-- Confirmation Header -->
+            <div class="confirmation-header">
+                <h1>Booking Confirmed!</h1>
+                <p>Your bike rental has been successfully booked</p>
+                <div class="booking-id-badge" id="bookingIdBadge">Booking ID: RG123456789</div>
+            </div>
+
+            <!-- Booking Summary -->
+            <div class="booking-summary">
+                <div class="booking-summary-header">
+                    <div class="bike-image-container">
+                        <img id="bikeImage" src="../assets/images/vehicles/placeholder.png" alt="Bike">
+                    </div>
+                    <div class="bike-info">
+                        <div class="bike-name" id="bikeName">Royal Enfield Himalayan</div>
+                        <div class="bike-category" id="bikeCategory">Adventure Bike</div>
+                    </div>
+                </div>
+
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">📍 Pickup Location</span>
+                        <span class="detail-value" id="pickupLocationText">Manali, Himachal Pradesh</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📅 Pickup Date & Time</span>
+                        <span class="detail-value" id="pickupDateTime">Jan 15, 2026, 10:00 AM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📍 Drop Location</span>
+                        <span class="detail-value" id="dropLocationText">Manali, Himachal Pradesh</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📅 Return Date & Time</span>
+                        <span class="detail-value" id="returnDateTime">Jan 20, 2026, 6:00 PM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">💳 Payment Status</span>
+                        <span class="detail-value" id="paymentStatus">Paid</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">📊 Rental Duration</span>
+                        <span class="detail-value" id="rentalDuration">5 days</span>
+                    </div>
+                </div>
+
+                <!-- Pricing Breakdown -->
+                <div style="margin-top: 2rem;">
+                    <h4 style="margin-bottom: 1rem; color: #1F2937;">Payment Details</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Rental Amount</span>
+                        <span class="detail-value" id="rentalAmountDisplay">₹7,500</span>
+                    </div>
+                    <div class="detail-row" id="insuranceRowConfirm" style="display: none;">
+                        <span class="detail-label">Insurance</span>
+                        <span class="detail-value" id="insuranceAmountDisplay">₹500</span>
+                    </div>
+                    <div class="detail-row" id="gpsRowConfirm" style="display: none;">
+                        <span class="detail-label">GPS Navigation</span>
+                        <span class="detail-value" id="gpsAmountDisplay">₹250</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Security Deposit</span>
+                        <span class="detail-value" id="depositDisplay">₹5,000</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">GST (18%)</span>
+                        <span class="detail-value" id="gstDisplay">₹2,340</span>
+                    </div>
+                    <div class="detail-row total-row">
+                        <span class="detail-label">Total Amount</span>
+                        <span class="detail-value" id="totalAmount">₹15,340</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Information -->
+            <div class="info-box">
+                <div class="info-box-title">⚠️ Important Information</div>
+                <ul class="info-box-list">
+                    <li>Carry a valid driving license and Aadhar card</li>
+                    <li>The security deposit will be refunded after inspection</li>
+                    <li>Arrive 15 minutes before pickup time</li>
+                    <li>Fuel tank will be full at pickup - return it full</li>
+                    <li>Report any damages immediately to avoid extra charges</li>
+                </ul>
+            </div>
+
+
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="my-bookings.html" class="action-card">
+                    <div class="action-card-icon">📋</div>
+                    <div class="action-card-title">View All Bookings</div>
+                    <div class="action-card-description">Check your booking history</div>
+                </a>
+
+                <a href="#" class="action-card" onclick="window.print(); return false;">
+                    <div class="action-card-icon">🖨️</div>
+                    <div class="action-card-title">Download Receipt</div>
+                    <div class="action-card-description">Print or save as PDF</div>
+                </a>
+
+                <a href="search-bike.html" class="action-card">
+                    <div class="action-card-icon">🔍</div>
+                    <div class="action-card-title">Book Another Bike</div>
+                    <div class="action-card-description">Plan your next adventure</div>
+                </a>
+
+                <a href="#" class="action-card" onclick="shareBooking(); return false;">
+                    <div class="action-card-icon">📤</div>
+                    <div class="action-card-title">Share Trip</div>
+                    <div class="action-card-description">Share with friends</div>
+                </a>
+            </div>
+
+
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/bikes-data.js"></script>
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Debug: Log all parameters
+        console.log('=== BOOKING CONFIRMATION PARAMETERS ===');
+        for (let [key, value] of urlParams.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        
+        // Extract parameters
+        const bookingId = urlParams.get('bookingId') || 'RG' + Date.now();
+        const totalAmount = urlParams.get('totalAmount') || urlParams.get('total') || urlParams.get('amount');
+        const bikeId = urlParams.get('bike');
+        const destinationId = urlParams.get('destination');
+        const startDate = urlParams.get('startDate');
+        const endDate = urlParams.get('endDate');
+        const pickupLocationId = urlParams.get('pickupLocation');
+        const dropLocationId = urlParams.get('dropLocation');
+        const pickupTime = urlParams.get('pickupTime') || '10:00';
+        const dropTime = urlParams.get('dropTime') || '18:00';
+        const paymentMethod = urlParams.get('paymentMethod') || 'cod';
+        
+        // Pricing parameters
+        const basePrice = urlParams.get('basePrice');
+        const insuranceAmount = urlParams.get('insuranceAmount');
+        const gpsAmount = urlParams.get('gpsAmount');
+        const deposit = urlParams.get('deposit') || '5000';
+        const gst = urlParams.get('gst');
+        const days = urlParams.get('days');
+
+        console.log('Extracted data:', {
+            bookingId, totalAmount, bikeId, destinationId, 
+            startDate, endDate, pickupLocationId, dropLocationId,
+            basePrice, insuranceAmount, gpsAmount, deposit, gst, days
+        });
+
+        // Load bike and destination data
+        let currentBike = null;
+        let currentDestination = null;
+        let pickupLocation = null;
+        let dropLocation = null;
+
+        if (bikeId) {
+            currentBike = getBikeById(bikeId);
+            console.log('Loaded bike:', currentBike);
+        }
+        
+        if (destinationId) {
+            currentDestination = getDestinationById(destinationId);
+            console.log('Loaded destination:', currentDestination);
+            
+            if (currentDestination && pickupLocationId) {
+                pickupLocation = currentDestination.pickupLocations.find(loc => loc.id == pickupLocationId);
+                console.log('Pickup location:', pickupLocation);
+            }
+            
+            if (currentDestination && dropLocationId) {
+                dropLocation = currentDestination.pickupLocations.find(loc => loc.id == dropLocationId);
+                console.log('Drop location:', dropLocation);
+            }
+        }
+
+        // Update booking ID
+        document.getElementById('bookingIdBadge').textContent = `Booking ID: ${bookingId}`;
+
+        // Update bike information
+        if (currentBike) {
+            document.getElementById('bikeName').textContent = currentBike.name;
+            document.getElementById('bikeCategory').textContent = currentBike.category || 'Motorcycle';
+            
+            const bikeImage = document.getElementById('bikeImage');
+            bikeImage.src = `../assets/images/vehicles/${currentBike.image}`;
+            bikeImage.onerror = function() {
+                this.src = '../assets/images/vehicles/placeholder.png';
+            };
+        } else {
+            // Fallback to URL parameters
+            const bikeName = urlParams.get('bikeName') || 'Royal Enfield Himalayan';
+            const bikeImage = urlParams.get('bikeImage');
+            
+            document.getElementById('bikeName').textContent = bikeName;
+            
+            if (bikeImage) {
+                const img = document.getElementById('bikeImage');
+                img.src = `../assets/images/vehicles/${bikeImage}`;
+                img.onerror = function() {
+                    this.src = '../assets/images/vehicles/placeholder.png';
+                };
+            }
+        }
+
+        // Update dates and times
+        if (startDate && endDate) {
+            const formattedStart = new Date(startDate).toLocaleDateString('en-IN', { 
+                year: 'numeric', month: 'short', day: 'numeric' 
+            });
+            const formattedEnd = new Date(endDate).toLocaleDateString('en-IN', { 
+                year: 'numeric', month: 'short', day: 'numeric' 
+            });
+            
+            // Format time from 24hr to 12hr
+            const formatTime = (time) => {
+                const [hours, minutes] = time.split(':');
+                const hour = parseInt(hours);
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour % 12 || 12;
+                return `${displayHour}:${minutes} ${ampm}`;
+            };
+            
+            document.getElementById('pickupDateTime').textContent = `${formattedStart}, ${formatTime(pickupTime)}`;
+            document.getElementById('returnDateTime').textContent = `${formattedEnd}, ${formatTime(dropTime)}`;
+            
+            // Calculate and display duration
+            if (days) {
+                document.getElementById('rentalDuration').textContent = `${days} day${days > 1 ? 's' : ''}`;
+            } else {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const calculatedDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                document.getElementById('rentalDuration').textContent = `${calculatedDays} day${calculatedDays > 1 ? 's' : ''}`;
+            }
+        }
+
+        // Update location information
+        if (currentDestination) {
+            const locationText = `${currentDestination.name}, ${currentDestination.state}`;
+            
+            if (pickupLocation) {
+                document.getElementById('pickupLocationText').textContent = pickupLocation.name;
+            } else {
+                document.getElementById('pickupLocationText').textContent = locationText;
+            }
+            
+            if (dropLocation) {
+                document.getElementById('dropLocationText').textContent = dropLocation.name;
+            } else {
+                document.getElementById('dropLocationText').textContent = locationText;
+            }
+        }
+
+        // Update pricing breakdown
+        if (basePrice) {
+            const basePriceNum = parseInt(basePrice);
+            document.getElementById('rentalAmountDisplay').textContent = `₹${basePriceNum.toLocaleString()}`;
+        }
+
+        if (insuranceAmount && parseInt(insuranceAmount) > 0) {
+            const insuranceNum = parseInt(insuranceAmount);
+            document.getElementById('insuranceRowConfirm').style.display = 'flex';
+            document.getElementById('insuranceAmountDisplay').textContent = `₹${insuranceNum.toLocaleString()}`;
+        }
+
+        if (gpsAmount && parseInt(gpsAmount) > 0) {
+            const gpsNum = parseInt(gpsAmount);
+            document.getElementById('gpsRowConfirm').style.display = 'flex';
+            document.getElementById('gpsAmountDisplay').textContent = `₹${gpsNum.toLocaleString()}`;
+        }
+
+        if (deposit) {
+            const depositNum = parseInt(deposit);
+            document.getElementById('depositDisplay').textContent = `₹${depositNum.toLocaleString()}`;
+        }
+
+        if (gst) {
+            const gstNum = parseInt(gst);
+            document.getElementById('gstDisplay').textContent = `₹${gstNum.toLocaleString()}`;
+        }
+
+        // Update total amount
+        if (totalAmount) {
+            const numericAmount = typeof totalAmount === 'string' ? parseInt(totalAmount.replace(/,/g, '')) : parseInt(totalAmount);
+            document.getElementById('totalAmount').textContent = `₹${numericAmount.toLocaleString()}`;
+        }
+
+        // Update payment status based on payment method
+        const paymentStatusElement = document.getElementById('paymentStatus');
+        if (paymentMethod === 'upi') {
+            paymentStatusElement.textContent = 'Paid';
+            paymentStatusElement.style.color = '#059669';
+            paymentStatusElement.style.fontWeight = '600';
+        } else if (paymentMethod === 'cod') {
+            paymentStatusElement.textContent = 'To Be Paid';
+            paymentStatusElement.style.color = '#DC2626';
+            paymentStatusElement.style.fontWeight = '600';
+        } else {
+            paymentStatusElement.textContent = 'To Be Paid';
+            paymentStatusElement.style.color = '#DC2626';
+            paymentStatusElement.style.fontWeight = '600';
+        }
+
+        console.log('Payment method:', paymentMethod);
+        console.log('Payment status set to:', paymentStatusElement.textContent);
+
+        // Share booking function
+        function shareBooking() {
+            const bikeName = currentBike ? currentBike.name : (urlParams.get('bikeName') || 'Bike');
+            const destinationName = currentDestination ? `${currentDestination.name}, ${currentDestination.state}` : 'your destination';
+            const pickupDateText = startDate ? new Date(startDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'your pickup date';
+            
+            const shareText = `I just booked a ${bikeName} on RideGo! 🏍️\n\nBooking ID: ${bookingId}\nPickup: ${pickupDateText}\nLocation: ${destinationName}\n\nBook yours at ridego.com`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My RideGo Booking',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Booking details copied to clipboard!');
+                }).catch(() => {
+                    alert('Share text:\n\n' + shareText);
+                });
+            }
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '../index.html';
+            }
+        });
+
+        // Auto-scroll to top on page load
+        window.scrollTo(0, 0);
+        
+        console.log('✅ Booking confirmation page loaded successfully');
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bikes - RideGo Admin</title>
+    <meta name="description" content="Manage bike listings on the RideGo platform.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .bikes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .bike-card {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform .3s, box-shadow .3s;
+        }
+
+        .bike-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .bike-image {
+            width: 100%;
+            height: 180px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: #fff;
+        }
+
+        .bike-content {
+            padding: 1.2rem 1.4rem;
+        }
+
+        .bike-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .bike-category {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .bike-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .bike-info-item .bike-info-label {
+            color: var(--gray);
+            font-size: 0.78rem;
+        }
+
+        .bike-info-item .bike-info-value {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--dark);
+        }
+
+        .bike-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .bike-vendor {
+            font-size: 0.82rem;
+            color: var(--gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .bike-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .bike-actions .dash-btn {
+            flex: 1;
+            font-size: 0.82rem;
+            padding: 0.5rem 0;
+        }
+
+        @media(max-width:768px) {
+            .bikes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Admin Panel</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="admin-users.html"><span class="nav-icon">👥</span> Users</a>
+                <a href="admin-vendors.html"><span class="nav-icon">🏪</span> Vendors</a>
+                <a href="admin-bikes.html" class="active"><span class="nav-icon">🏍️</span> Bikes</a>
+                <a href="admin-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="admin-analytics.html"><span class="nav-icon">📈</span> Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Bike Listings</h1>
+                    <p>Review and manage all bike listings</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Stats -->
+                <div class="dashboard-cards-grid">
+                    <div class="dashboard-card card-blue">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Total Listings</div>
+                                <div class="card-value" id="totalBikes">0</div>
+                            </div>
+                            <div class="card-icon">🏍️</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-green">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Approved</div>
+                                <div class="card-value" id="approvedBikes">0</div>
+                            </div>
+                            <div class="card-icon">✅</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-amber">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Pending</div>
+                                <div class="card-value" id="pendingBikes">0</div>
+                            </div>
+                            <div class="card-icon">⏳</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-red">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Rejected</div>
+                                <div class="card-value" id="rejectedBikes">0</div>
+                            </div>
+                            <div class="card-icon">✗</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;">
+                    <select class="form-control" id="statusTab" style="width:auto;min-width:150px;padding:0.6rem 1rem;"
+                        onchange="filterBikes()">
+                        <option value="all">All Bikes</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <input type="text" class="form-control" id="searchInput"
+                        placeholder="🔍 Search by name or category…" style="flex:1;min-width:220px;padding:0.6rem 1rem;"
+                        oninput="filterBikes()">
+                    <select class="form-control" id="categoryFilter"
+                        style="width:auto;min-width:140px;padding:0.6rem 1rem;" onchange="filterBikes()">
+                        <option value="all">All Categories</option>
+                    </select>
+                    <select class="form-control" id="destinationFilter"
+                        style="width:auto;min-width:160px;padding:0.6rem 1rem;" onchange="filterBikes()">
+                        <option value="all">All Destinations</option>
+                    </select>
+                </div>
+
+                <!-- Bikes Grid -->
+                <div class="bikes-grid" id="bikesGrid">
+                    <div style="text-align:center;padding:3rem;color:var(--gray);grid-column:1/-1;">Loading bikes…</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bike Details Modal -->
+    <div class="modal-overlay" id="bikeModal">
+        <div class="modal-box" style="max-width:800px;">
+            <div class="modal-header">
+                <h2>Bike Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="bikeDetailsContent"></div>
+            <div class="modal-footer" id="modalActions"></div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser.role !== 'admin') { alert('Access denied.'); window.location.href = '../index.html'; }
+
+        document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'A')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        let allBikes = [];
+
+        function initializeDemoBikes() {
+            if (!localStorage.getItem('ridego_bikes')) {
+                const bikes = [
+                    { id: 'bike-001', vendorId: 'V1', name: 'Royal Enfield Himalayan', category: 'Adventure', dailyRate: 2500, cc: 411, fuelType: 'Petrol', transmission: 'Manual', destination: 'goa', approvalStatus: 'approved', available: true, createdAt: new Date(Date.now() - 25 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 24 * 864e5).toISOString() },
+                    { id: 'bike-002', vendorId: 'V2', name: 'KTM 390 Adventure', category: 'Adventure', dailyRate: 3000, cc: 373, fuelType: 'Petrol', transmission: 'Manual', destination: 'manali', approvalStatus: 'pending', available: true, createdAt: new Date(Date.now() - 2 * 864e5).toISOString() },
+                    { id: 'bike-003', vendorId: 'V3', name: 'Bajaj Dominar 400', category: 'Cruiser', dailyRate: 2200, cc: 373, fuelType: 'Petrol', transmission: 'Manual', destination: 'leh-ladakh', approvalStatus: 'pending', available: true, createdAt: new Date(Date.now() - 1 * 864e5).toISOString() },
+                    { id: 'bike-004', vendorId: 'V4', name: 'Honda Activa 6G', category: 'Scooter', dailyRate: 800, cc: 109, fuelType: 'Petrol', transmission: 'Automatic', destination: 'jaipur', approvalStatus: 'approved', available: true, createdAt: new Date(Date.now() - 40 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 38 * 864e5).toISOString() },
+                    { id: 'bike-005', vendorId: 'V1', name: 'Bajaj Pulsar 150', category: 'Sports', dailyRate: 1200, cc: 149, fuelType: 'Petrol', transmission: 'Manual', destination: 'goa', approvalStatus: 'approved', available: true, createdAt: new Date(Date.now() - 20 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 19 * 864e5).toISOString() },
+                    { id: 'bike-006', vendorId: 'V5', name: 'Yamaha FZ-S', category: 'Sports', dailyRate: 1500, cc: 149, fuelType: 'Petrol', transmission: 'Manual', destination: 'delhi', approvalStatus: 'rejected', available: false, createdAt: new Date(Date.now() - 10 * 864e5).toISOString(), rejectedAt: new Date(Date.now() - 8 * 864e5).toISOString(), rejectionReason: 'Poor bike condition' }
+                ];
+                localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+            }
+        }
+
+        function loadBikes() {
+            initializeDemoBikes();
+            allBikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+
+            document.getElementById('totalBikes').textContent = allBikes.length;
+            document.getElementById('approvedBikes').textContent = allBikes.filter(b => b.approvalStatus === 'approved').length;
+            document.getElementById('pendingBikes').textContent = allBikes.filter(b => b.approvalStatus === 'pending').length;
+            document.getElementById('rejectedBikes').textContent = allBikes.filter(b => b.approvalStatus === 'rejected').length;
+
+            const categories = [...new Set(allBikes.map(b => b.category))].sort();
+            const cf = document.getElementById('categoryFilter');
+            cf.innerHTML = '<option value="all">All Categories</option>';
+            categories.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
+
+            const destinations = [...new Set(allBikes.map(b => b.destination))].sort();
+            const df = document.getElementById('destinationFilter');
+            df.innerHTML = '<option value="all">All Destinations</option>';
+            destinations.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); df.appendChild(o); });
+
+            filterBikes();
+        }
+
+        function filterBikes() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusTab').value;
+            const cat = document.getElementById('categoryFilter').value;
+            const dest = document.getElementById('destinationFilter').value;
+            const filtered = allBikes.filter(b => {
+                return (b.name + ' ' + b.category).toLowerCase().includes(search)
+                    && (status === 'all' || b.approvalStatus === status)
+                    && (cat === 'all' || b.category === cat)
+                    && (dest === 'all' || b.destination === dest);
+            });
+            renderBikes(filtered);
+        }
+
+        function renderBikes(bikes) {
+            const grid = document.getElementById('bikesGrid');
+            if (bikes.length === 0) { grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gray);grid-column:1/-1;">No bikes found.</div>'; return; }
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            grid.innerHTML = bikes.map(b => {
+                const vendor = vendors.find(v => v.id === b.vendorId);
+                const sc = b.approvalStatus === 'approved' ? 'status-approved' : b.approvalStatus === 'pending' ? 'status-pending' : 'status-rejected';
+                return `<div class="bike-card">
+                    <div class="bike-image">🏍️</div>
+                    <div class="bike-content">
+                        <div class="bike-name">${b.name}</div>
+                        <div class="bike-category">${b.category}</div>
+                        <span class="status-badge ${sc}" style="text-transform:capitalize;margin-bottom:0.75rem;display:inline-block;">${b.approvalStatus}</span>
+                        <div class="bike-info">
+                            <div class="bike-info-item"><div class="bike-info-label">Engine</div><div class="bike-info-value">${b.cc} CC</div></div>
+                            <div class="bike-info-item"><div class="bike-info-label">Fuel</div><div class="bike-info-value">${b.fuelType}</div></div>
+                            <div class="bike-info-item"><div class="bike-info-label">Trans.</div><div class="bike-info-value">${b.transmission}</div></div>
+                            <div class="bike-info-item"><div class="bike-info-label">Location</div><div class="bike-info-value">${b.destination.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</div></div>
+                        </div>
+                        <div class="bike-price">₹${b.dailyRate}/day</div>
+                        <div class="bike-vendor">Vendor: ${vendor ? vendor.businessName : 'Unknown'}</div>
+                        <div class="bike-actions">
+                            <button class="dash-btn dash-btn-edit" onclick="viewBike('${b.id}')">👁️ View</button>
+                            ${b.approvalStatus === 'pending' ? `<button class="dash-btn dash-btn-approve" onclick="approveBike('${b.id}')">✓</button><button class="dash-btn dash-btn-reject" onclick="rejectBike('${b.id}')">✗</button>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function viewBike(bikeId) {
+            const bike = allBikes.find(b => b.id === bikeId);
+            if (!bike) return;
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const vendor = vendors.find(v => v.id === bike.vendorId);
+            const sc = bike.approvalStatus === 'approved' ? 'status-approved' : bike.approvalStatus === 'pending' ? 'status-pending' : 'status-rejected';
+            document.getElementById('bikeDetailsContent').innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    ${[['Bike ID', bike.id], ['Name', bike.name], ['Category', bike.category], ['Daily Rate', '₹' + bike.dailyRate], ['Engine', bike.cc + ' CC'], ['Fuel', bike.fuelType], ['Transmission', bike.transmission], ['Destination', bike.destination.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())]].map(([l, v]) => `<div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">${l}</div><div style="font-weight:600;color:var(--dark);">${v}</div></div>`).join('')}
+                </div>
+                <h4 style="margin:1.2rem 0 0.6rem;color:var(--gray);font-weight:600;">Vendor</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    ${[['Vendor ID', bike.vendorId], ['Business', vendor ? vendor.businessName : 'Unknown'], ['Email', vendor ? vendor.email : 'N/A'], ['Phone', vendor ? vendor.phone : 'N/A']].map(([l, v]) => `<div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">${l}</div><div style="font-weight:600;color:var(--dark);">${v}</div></div>`).join('')}
+                </div>
+                <h4 style="margin:1.2rem 0 0.6rem;color:var(--gray);font-weight:600;">Status</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Status</div><div><span class="status-badge ${sc}" style="text-transform:capitalize;">${bike.approvalStatus}</span></div></div>
+                    <div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Available</div><div style="font-weight:600;">${bike.available ? 'Yes' : 'No'}</div></div>
+                    <div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Listed On</div><div style="font-weight:600;">${new Date(bike.createdAt).toLocaleDateString()}</div></div>
+                    ${bike.approvedAt ? `<div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Approved</div><div style="font-weight:600;">${new Date(bike.approvedAt).toLocaleDateString()}</div></div>` : ''}
+                    ${bike.rejectedAt ? `<div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Rejected</div><div style="font-weight:600;">${new Date(bike.rejectedAt).toLocaleDateString()}</div></div><div style="padding:0.7rem;background:var(--light-gray);border-radius:8px;"><div style="font-size:0.82rem;color:var(--gray);">Reason</div><div style="font-weight:600;">${bike.rejectionReason || 'N/A'}</div></div>` : ''}
+                </div>`;
+            document.getElementById('modalActions').innerHTML = bike.approvalStatus === 'pending'
+                ? `<button class="dash-btn dash-btn-approve" onclick="approveBike('${bike.id}');closeModal();">✓ Approve</button><button class="dash-btn dash-btn-reject" onclick="rejectBike('${bike.id}');closeModal();">✗ Reject</button>`
+                : '';
+            document.getElementById('bikeModal').classList.add('show');
+        }
+
+        function closeModal() { document.getElementById('bikeModal').classList.remove('show'); }
+
+        function approveBike(bikeId) {
+            if (!confirm('Approve this bike listing?')) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const i = bikes.findIndex(b => b.id === bikeId);
+            if (i !== -1) { bikes[i].approvalStatus = 'approved'; bikes[i].approvedAt = new Date().toISOString(); bikes[i].available = true; delete bikes[i].rejectedAt; delete bikes[i].rejectionReason; localStorage.setItem('ridego_bikes', JSON.stringify(bikes)); alert('Bike approved!'); loadBikes(); }
+        }
+
+        function rejectBike(bikeId) {
+            const reason = prompt('Enter rejection reason:');
+            if (!reason) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const i = bikes.findIndex(b => b.id === bikeId);
+            if (i !== -1) { bikes[i].approvalStatus = 'rejected'; bikes[i].rejectedAt = new Date().toISOString(); bikes[i].rejectionReason = reason; bikes[i].available = false; delete bikes[i].approvedAt; localStorage.setItem('ridego_bikes', JSON.stringify(bikes)); alert('Bike rejected.'); loadBikes(); }
+        }
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+
+        loadBikes();
+    </script>
+</body>
+
+</html>

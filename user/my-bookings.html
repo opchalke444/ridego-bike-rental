@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- My Bookings Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">My Bookings</h2>
+                <p class="section-subtitle">Track and manage all your bike rental bookings</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="role-tabs mb-4">
+                <button class="role-tab active" data-filter="all">All Bookings</button>
+                <button class="role-tab" data-filter="active">Active</button>
+                <button class="role-tab" data-filter="upcoming">Upcoming</button>
+                <button class="role-tab" data-filter="completed">Completed</button>
+                <button class="role-tab" data-filter="cancelled">Cancelled</button>
+            </div>
+
+            <!-- Active Bookings -->
+            <div class="mb-4 booking-section" data-category="active">
+                <h3 class="mb-3">Active Bookings</h3>
+                <div class="feature-card">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Royal Enfield Himalayan.png" alt="Bike">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Active</div>
+                            <h4 class="vehicle-name">Royal Enfield Himalayan</h4>
+                            <p class="vehicle-category">Adventure Bike</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001234</div>
+                                <div><strong>Pickup:</strong> Feb 10, 2025, 10:00 AM</div>
+                                <div><strong>Return:</strong> Feb 15, 2025, 6:00 PM</div>
+                                <div><strong>Location:</strong> Manali, HP</div>
+                                <div><strong>Vendor:</strong> Manali Bike Rentals</div>
+                                <div><strong>Amount:</strong> ₹18,250</div>
+                            </div>
+                            <div class="hero-buttons mt-3">
+                                
+                                <a href="#" class="btn btn-outline btn-small">Contact Vendor</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card mt-3">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Honda Activa 6G.png" alt="Honda Activa 6G">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Active</div>
+                            <h4 class="vehicle-name">Honda Activa 6G</h4>
+                            <p class="vehicle-category">Scooter</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001235</div>
+                                <div><strong>Pickup:</strong> Feb 8, 2025, 9:00 AM</div>
+                                <div><strong>Return:</strong> Feb 12, 2025, 7:00 PM</div>
+                                <div><strong>Location:</strong> Goa</div>
+                                <div><strong>Vendor:</strong> Goa Beach Rentals</div>
+                                <div><strong>Amount:</strong> ₹4,000</div>
+                            </div>
+                            <div class="hero-buttons mt-3">
+                                
+                                <a href="#" class="btn btn-outline btn-small">Contact Vendor</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Bookings -->
+            <div class="mb-4 booking-section" data-category="upcoming">
+                <h3 class="mb-3">Upcoming Bookings</h3>
+                <div class="feature-card">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/KTM Duke 200 (BS6).png" alt="KTM Duke 200 (BS6)">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Upcoming</div>
+                            <h4 class="vehicle-name">KTM Duke 200 (BS6)</h4>
+                            <p class="vehicle-category">Sports Bike</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001240</div>
+                                <div><strong>Pickup:</strong> Feb 20, 2025, 11:00 AM</div>
+                                <div><strong>Return:</strong> Feb 25, 2025, 5:00 PM</div>
+                                <div><strong>Location:</strong> Udaipur, RJ</div>
+                                <div><strong>Vendor:</strong> Udaipur Adventure Rides</div>
+                                <div><strong>Amount:</strong> ₹15,000</div>
+                            </div>
+                            <div class="hero-buttons mt-3">
+                                
+                                <a href="#" class="btn btn-secondary btn-small cancel-booking-btn" data-booking-id="RG2025001240">Cancel Booking</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Bookings -->
+            <div class="mb-4 booking-section" data-category="completed">
+                <h3 class="mb-3">Completed Bookings</h3>
+                <div class="feature-card">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Bajaj Avenger Cruise 220.png" alt="Bajaj Avenger Cruise 220">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Completed</div>
+                            <h4 class="vehicle-name">Bajaj Avenger Cruise 220</h4>
+                            <p class="vehicle-category">Cruiser Bike</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001150</div>
+                                <div><strong>Pickup:</strong> Jan 15, 2025, 10:00 AM</div>
+                                <div><strong>Return:</strong> Jan 20, 2025, 6:00 PM</div>
+                                <div><strong>Location:</strong> Leh-Ladakh</div>
+                                <div><strong>Vendor:</strong> Ladakh Bike Rentals</div>
+                                <div><strong>Amount:</strong> ₹13,500</div>
+                            </div>
+                            <div class="hero-buttons mt-3">
+                                <a href="rate-booking.html?bike=Bajaj%20Avenger%20Cruise%20220&category=Cruiser%20Bike&location=Leh-Ladakh&dates=Jan%2015%20-%20Jan%2020,%202025&vendor=Ladakh%20Bike%20Rentals&vendorLocation=Leh-Ladakh&contact=%2B91%209876543210&days=5&amount=13500&bookingId=RG2025001150&image=Bajaj%20Avenger%20Cruise%20220.png" class="btn btn-primary btn-small">Rate Experience</a>
+                                <a href="search-bike.html" class="btn btn-accent btn-small">Book Again</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card mt-3">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Honda Unicorn 160.png" alt="Honda Unicorn 160">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Completed</div>
+                            <h4 class="vehicle-name">Honda Unicorn 160</h4>
+                            <p class="vehicle-category">Standard Bike</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001100</div>
+                                <div><strong>Pickup:</strong> Jan 5, 2025, 9:00 AM</div>
+                                <div><strong>Return:</strong> Jan 10, 2025, 7:00 PM</div>
+                                <div><strong>Location:</strong> Darjeeling</div>
+                                <div><strong>Vendor:</strong> Hill Station Rides</div>
+                                <div><strong>Amount:</strong> ₹10,800</div>
+                            </div>
+                            <div class="hero-buttons mt-3">
+                                <a href="rate-booking.html?bike=Honda%20Unicorn%20160&category=Standard%20Bike&location=Darjeeling&dates=Jan%205%20-%20Jan%2010,%202025&vendor=Hill%20Station%20Rides&vendorLocation=Darjeeling&contact=%2B91%209876543211&days=5&amount=10800&bookingId=RG2025001100&image=Honda%20Unicorn%20160.png" class="btn btn-primary btn-small">Rate Experience</a>
+                                <a href="search-bike.html" class="btn btn-accent btn-small">Book Again</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cancelled Bookings -->
+            <div class="mb-4 booking-section" data-category="cancelled">
+                <h3 class="mb-3">Cancelled Bookings</h3>
+                <div class="feature-card">
+                    <div class="form-row">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Royal Enfield Classic 350.png" alt="Royal Enfield Classic 350">
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="feature-badge">Cancelled</div>
+                            <h4 class="vehicle-name">Royal Enfield Classic 350</h4>
+                            <p class="vehicle-category">Cruiser Bike</p>
+                            <div style="margin-top: 1rem; line-height: 2;">
+                                <div><strong>Booking ID:</strong> RG2025001050</div>
+                                <div><strong>Pickup:</strong> Dec 25, 2024, 10:00 AM</div>
+                                <div><strong>Return:</strong> Dec 30, 2024, 6:00 PM</div>
+                                <div><strong>Location:</strong> Munnar, Kerala</div>
+                                <div><strong>Refund Amount:</strong> ₹3,500</div>
+                                <div><strong>Refund Status:</strong> Processed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Bookings Message (Hidden by default) -->
+            <div class="feature-card text-center" style="display: none;">
+                <h3 class="mb-2">No Bookings Yet</h3>
+                <p class="mb-3">Start your adventure by booking your first bike!</p>
+                <a href="search-bike.html" class="btn btn-primary btn-large">Search Bikes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧  ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Filter tabs functionality
+        const tabs = document.querySelectorAll('.role-tab');
+        const bookingSections = document.querySelectorAll('.booking-section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Get filter value
+                const filter = this.getAttribute('data-filter');
+                
+                // Show/hide sections based on filter
+                bookingSections.forEach(section => {
+                    if (filter === 'all') {
+                        section.style.display = 'block';
+                    } else {
+                        const category = section.getAttribute('data-category');
+                        section.style.display = (category === filter) ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Cancel booking functionality
+        document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const bookingId = this.getAttribute('data-booking-id');
+                
+                if (confirm(`Are you sure you want to cancel booking ${bookingId}?\n\nCancellation charges may apply as per our cancellation policy.`)) {
+                    alert(`Booking ${bookingId} has been cancelled successfully!\n\nRefund will be processed within 5-7 business days.`);
+                    // Remove the booking card
+                    this.closest('.feature-card').remove();
+                }
+            });
+        });
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

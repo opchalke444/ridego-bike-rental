@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Vendors - RideGo Admin</title>
+    <meta name="description" content="Manage vendor registrations and approvals on RideGo.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Admin Panel</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="admin-users.html"><span class="nav-icon">👥</span> Users</a>
+                <a href="admin-vendors.html" class="active"><span class="nav-icon">🏪</span> Vendors</a>
+                <a href="admin-bikes.html"><span class="nav-icon">🏍️</span> Bikes</a>
+                <a href="admin-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="admin-analytics.html"><span class="nav-icon">📈</span> Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Vendor Management</h1>
+                    <p>Review, approve, and manage vendor registrations</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Stats -->
+                <div class="dashboard-cards-grid">
+                    <div class="dashboard-card card-blue">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Total Vendors</div>
+                                <div class="card-value" id="totalVendors">0</div>
+                            </div>
+                            <div class="card-icon">🏪</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-green">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Approved</div>
+                                <div class="card-value" id="approvedVendors">0</div>
+                            </div>
+                            <div class="card-icon">✅</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-amber">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Pending</div>
+                                <div class="card-value" id="pendingVendors">0</div>
+                            </div>
+                            <div class="card-icon">⏳</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-red">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Rejected</div>
+                                <div class="card-value" id="rejectedVendors">0</div>
+                            </div>
+                            <div class="card-icon">✗</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Tabs + Filters -->
+                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;">
+                    <select class="form-control" id="statusTab" style="width:auto;min-width:160px;padding:0.6rem 1rem;"
+                        onchange="filterVendors()">
+                        <option value="all">All Vendors</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <input type="text" class="form-control" id="searchInput"
+                        placeholder="🔍 Search by name, email, city…"
+                        style="flex:1;min-width:220px;padding:0.6rem 1rem;" oninput="filterVendors()">
+                    <select class="form-control" id="cityFilter" style="width:auto;min-width:140px;padding:0.6rem 1rem;"
+                        onchange="filterVendors()">
+                        <option value="all">All Cities</option>
+                    </select>
+                </div>
+
+                <!-- Vendors Table -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-overflow">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Business Name</th>
+                                    <th>Type</th>
+                                    <th>Contact</th>
+                                    <th>Location</th>
+                                    <th>Submitted</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vendorsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray);">Loading
+                                        vendors…</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Details Modal -->
+    <div class="modal-overlay" id="vendorModal">
+        <div class="modal-box" style="max-width:700px;">
+            <div class="modal-header">
+                <h2>Vendor Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="vendorDetailsContent"></div>
+            <div class="modal-footer" id="modalActions"></div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser.role !== 'admin') { alert('Access denied.'); window.location.href = '../index.html'; }
+
+        document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'A')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        let allVendors = [];
+
+        function initializeDemoVendors() {
+            if (!localStorage.getItem('ridego_vendors')) {
+                const vendors = [
+                    { id: 'V1', userId: 'V1', businessName: 'Goa Beach Rentals', businessType: 'company', email: 'vendor@demo.com', phone: '+91 9876543211', address: '456 Vendor Street', city: 'Goa', state: 'goa', pincode: '403001', approvalStatus: 'approved', createdAt: new Date(Date.now() - 30 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 28 * 864e5).toISOString() },
+                    { id: 'V2', userId: 'V2', businessName: 'Manali Adventure Bikes', businessType: 'individual', email: 'manali.vendor@example.com', phone: '+91 9876543220', address: 'Mall Road, Manali', city: 'Manali', state: 'himachal-pradesh', pincode: '175131', approvalStatus: 'pending', createdAt: new Date(Date.now() - 2 * 864e5).toISOString() },
+                    { id: 'V3', userId: 'V3', businessName: 'Leh Ladakh Expeditions', businessType: 'company', email: 'leh.bikes@example.com', phone: '+91 9876543221', address: 'Main Bazaar, Leh', city: 'Leh', state: 'ladakh', pincode: '194101', approvalStatus: 'pending', createdAt: new Date(Date.now() - 1 * 864e5).toISOString() },
+                    { id: 'V4', userId: 'V4', businessName: 'Jaipur Royal Rides', businessType: 'company', email: 'jaipur.rides@example.com', phone: '+91 9876543222', address: 'MI Road, Jaipur', city: 'Jaipur', state: 'rajasthan', pincode: '302001', approvalStatus: 'approved', createdAt: new Date(Date.now() - 45 * 864e5).toISOString(), approvedAt: new Date(Date.now() - 43 * 864e5).toISOString() },
+                    { id: 'V5', userId: 'V5', businessName: 'Budget Bikes Delhi', businessType: 'individual', email: 'budget.delhi@example.com', phone: '+91 9876543223', address: 'Connaught Place, Delhi', city: 'Delhi', state: 'delhi', pincode: '110001', approvalStatus: 'rejected', createdAt: new Date(Date.now() - 10 * 864e5).toISOString(), rejectedAt: new Date(Date.now() - 8 * 864e5).toISOString(), rejectionReason: 'Incomplete documentation' }
+                ];
+                localStorage.setItem('ridego_vendors', JSON.stringify(vendors));
+            }
+        }
+
+        function loadVendors() {
+            initializeDemoVendors();
+            allVendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+
+            document.getElementById('totalVendors').textContent = allVendors.length;
+            document.getElementById('approvedVendors').textContent = allVendors.filter(v => v.approvalStatus === 'approved').length;
+            document.getElementById('pendingVendors').textContent = allVendors.filter(v => v.approvalStatus === 'pending').length;
+            document.getElementById('rejectedVendors').textContent = allVendors.filter(v => v.approvalStatus === 'rejected').length;
+
+            const cities = [...new Set(allVendors.map(v => v.city))].sort();
+            const cf = document.getElementById('cityFilter');
+            cf.innerHTML = '<option value="all">All Cities</option>';
+            cities.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; cf.appendChild(o); });
+
+            filterVendors();
+        }
+
+        function filterVendors() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusTab').value;
+            const city = document.getElementById('cityFilter').value;
+            const filtered = allVendors.filter(v => {
+                const ms = (v.businessName + ' ' + v.email + ' ' + v.city).toLowerCase().includes(search);
+                const mst = status === 'all' || v.approvalStatus === status;
+                const mc = city === 'all' || v.city === city;
+                return ms && mst && mc;
+            });
+            renderVendors(filtered);
+        }
+
+        function renderVendors(vendors) {
+            const tbody = document.getElementById('vendorsTableBody');
+            if (vendors.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--gray);">No vendors found.</td></tr>'; return; }
+            tbody.innerHTML = vendors.map(v => {
+                const sc = v.approvalStatus === 'approved' ? 'status-approved' : v.approvalStatus === 'pending' ? 'status-pending' : 'status-rejected';
+                return `<tr>
+                    <td><strong>${v.businessName}</strong></td>
+                    <td>${v.businessType === 'company' ? '🏢 Company' : '👤 Individual'}</td>
+                    <td><div>${v.email}</div><div style="color:var(--gray);font-size:0.82rem;">${v.phone}</div></td>
+                    <td>${v.city}, ${v.state}</td>
+                    <td>${new Date(v.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge ${sc}" style="text-transform:capitalize;">${v.approvalStatus}</span></td>
+                    <td>
+                        <button class="dash-btn dash-btn-edit" onclick="viewVendor('${v.id}')">👁️ View</button>
+                        ${v.approvalStatus === 'pending' ? `<button class="dash-btn dash-btn-approve" onclick="approveVendor('${v.id}')">✓</button><button class="dash-btn dash-btn-reject" onclick="rejectVendor('${v.id}')">✗</button>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function viewVendor(vendorId) {
+            const v = allVendors.find(x => x.id === vendorId);
+            if (!v) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]').filter(b => b.vendorId === vendorId);
+            const sc = v.approvalStatus === 'approved' ? 'status-approved' : v.approvalStatus === 'pending' ? 'status-pending' : 'status-rejected';
+            document.getElementById('vendorDetailsContent').innerHTML = `
+                <div style="display:grid;gap:0.8rem;">
+                    <h4 style="margin-top:0.5rem;color:var(--gray);font-weight:600;">Business Information</h4>
+                    ${[['Vendor ID', v.id], ['Business Name', v.businessName], ['Type', v.businessType === 'company' ? 'Company' : 'Individual']].map(([l, val]) => `<div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">${l}</div><div>${val}</div></div>`).join('')}
+                    <h4 style="margin-top:0.5rem;color:var(--gray);font-weight:600;">Contact</h4>
+                    ${[['Email', v.email], ['Phone', v.phone], ['Address', v.address], ['City', v.city], ['State', v.state], ['Pincode', v.pincode]].map(([l, val]) => `<div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">${l}</div><div>${val}</div></div>`).join('')}
+                    <h4 style="margin-top:0.5rem;color:var(--gray);font-weight:600;">Status</h4>
+                    <div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Status</div><div><span class="status-badge ${sc}" style="text-transform:capitalize;">${v.approvalStatus}</span></div></div>
+                    <div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Submitted</div><div>${new Date(v.createdAt).toLocaleString()}</div></div>
+                    ${v.approvedAt ? `<div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Approved</div><div>${new Date(v.approvedAt).toLocaleString()}</div></div>` : ''}
+                    ${v.rejectedAt ? `<div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Rejected</div><div>${new Date(v.rejectedAt).toLocaleString()}</div></div>` : ''}
+                    ${v.rejectionReason ? `<div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Reason</div><div>${v.rejectionReason}</div></div>` : ''}
+                    <div style="display:flex;padding:0.5rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">Total Bikes</div><div>${bikes.length}</div></div>
+                    <div style="display:flex;padding:0.5rem 0;"><div style="font-weight:600;width:140px;color:var(--gray);">Approved Bikes</div><div>${bikes.filter(b => b.approvalStatus === 'approved').length}</div></div>
+                </div>`;
+            document.getElementById('modalActions').innerHTML = v.approvalStatus === 'pending'
+                ? `<button class="dash-btn dash-btn-approve" onclick="approveVendor('${v.id}');closeModal();">✓ Approve</button><button class="dash-btn dash-btn-reject" onclick="rejectVendor('${v.id}');closeModal();">✗ Reject</button>`
+                : '';
+            document.getElementById('vendorModal').classList.add('show');
+        }
+
+        function closeModal() { document.getElementById('vendorModal').classList.remove('show'); }
+
+        function approveVendor(vendorId) {
+            if (!confirm('Approve this vendor?')) return;
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const i = vendors.findIndex(v => v.id === vendorId);
+            if (i !== -1) { vendors[i].approvalStatus = 'approved'; vendors[i].approvedAt = new Date().toISOString(); delete vendors[i].rejectedAt; delete vendors[i].rejectionReason; localStorage.setItem('ridego_vendors', JSON.stringify(vendors)); alert('Vendor approved!'); loadVendors(); }
+        }
+
+        function rejectVendor(vendorId) {
+            const reason = prompt('Enter rejection reason:');
+            if (!reason) return;
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const i = vendors.findIndex(v => v.id === vendorId);
+            if (i !== -1) { vendors[i].approvalStatus = 'rejected'; vendors[i].rejectedAt = new Date().toISOString(); vendors[i].rejectionReason = reason; delete vendors[i].approvedAt; localStorage.setItem('ridego_vendors', JSON.stringify(vendors)); alert('Vendor rejected.'); loadVendors(); }
+        }
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+
+        loadVendors();
+    </script>
+</body>
+
+</html>

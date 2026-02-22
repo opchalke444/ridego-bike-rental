@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - RideGo Admin</title>
+    <meta name="description" content="Analytics and insights for the RideGo platform.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-box {
+            background: #fff;
+            padding: 1.4rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .chart-box-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 280px;
+        }
+
+        .full-span {
+            grid-column: 1/-1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--lighter-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width .3s;
+        }
+
+        @media(max-width:768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Admin Panel</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="admin-users.html"><span class="nav-icon">👥</span> Users</a>
+                <a href="admin-vendors.html"><span class="nav-icon">🏪</span> Vendors</a>
+                <a href="admin-bikes.html"><span class="nav-icon">🏍️</span> Bikes</a>
+                <a href="admin-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="admin-analytics.html" class="active"><span class="nav-icon">📈</span> Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Analytics &amp; Insights</h1>
+                    <p>Platform performance at a glance</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Stats Overview -->
+                <div class="dashboard-cards-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));"
+                    id="statsOverview"></div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-box">
+                        <h3 class="chart-box-title">Bookings Trend</h3>
+                        <div class="chart-wrap"><canvas id="bookingsTrendChart"></canvas></div>
+                    </div>
+                    <div class="chart-box">
+                        <h3 class="chart-box-title">Revenue Trend</h3>
+                        <div class="chart-wrap"><canvas id="revenueTrendChart"></canvas></div>
+                    </div>
+                    <div class="chart-box">
+                        <h3 class="chart-box-title">Booking Status Distribution</h3>
+                        <div class="chart-wrap"><canvas id="statusDistributionChart"></canvas></div>
+                    </div>
+                    <div class="chart-box">
+                        <h3 class="chart-box-title">Payment Status</h3>
+                        <div class="chart-wrap"><canvas id="paymentStatusChart"></canvas></div>
+                    </div>
+                    <div class="chart-box full-span">
+                        <h3 class="chart-box-title">Popular Destinations</h3>
+                        <div class="chart-wrap"><canvas id="destinationsChart"></canvas></div>
+                    </div>
+                    <div class="chart-box full-span">
+                        <h3 class="chart-box-title">Popular Bike Categories</h3>
+                        <div class="chart-wrap"><canvas id="categoriesChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Top Performing Bikes -->
+                <div class="dashboard-table-wrap" style="margin-bottom:1.5rem;">
+                    <h3 style="padding:1.2rem 1.4rem 0;font-size:1.05rem;font-weight:600;color:var(--dark);">Top
+                        Performing Bikes</h3>
+                    <div class="table-overflow">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Bike Name</th>
+                                    <th>Category</th>
+                                    <th>Bookings</th>
+                                    <th>Revenue</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topBikesTable">
+                                <tr>
+                                    <td colspan="6" style="text-align:center;padding:2rem;color:var(--gray);">Loading…
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Top Users -->
+                <div class="dashboard-table-wrap">
+                    <h3 style="padding:1.2rem 1.4rem 0;font-size:1.05rem;font-weight:600;color:var(--dark);">Top Users
+                        by Bookings</h3>
+                    <div class="table-overflow">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Bookings</th>
+                                    <th>Spent</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topUsersTable">
+                                <tr>
+                                    <td colspan="5" style="text-align:center;padding:2rem;color:var(--gray);">Loading…
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser.role !== 'admin') { alert('Access denied.'); window.location.href = '../index.html'; }
+
+        document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'A')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        // Load all data
+        const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+        const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+        const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+        const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+
+        // Calculate analytics
+        const totalRevenue = bookings.filter(b => b.paymentStatus === 'completed').reduce((s, b) => s + (b.total || 0), 0);
+        const avgBookingValue = bookings.length > 0 ? totalRevenue / bookings.length : 0;
+        const completionRate = bookings.length > 0 ? (bookings.filter(b => b.status === 'completed').length / bookings.length * 100) : 0;
+
+        // Render stats overview
+        document.getElementById('statsOverview').innerHTML = `
+            <div class="dashboard-card card-green"><div class="card-top"><div><div class="card-label">Total Revenue</div><div class="card-value" style="font-size:1.3rem;">₹${totalRevenue.toLocaleString()}</div></div><div class="card-icon">💰</div></div><div class="card-sub">${bookings.filter(b => b.paymentStatus === 'completed').length} completed payments</div></div>
+            <div class="dashboard-card card-blue"><div class="card-top"><div><div class="card-label">Total Bookings</div><div class="card-value">${bookings.length}</div></div><div class="card-icon">📅</div></div><div class="card-sub">${bookings.filter(b => b.status === 'active').length} currently active</div></div>
+            <div class="dashboard-card card-purple"><div class="card-top"><div><div class="card-label">Avg Booking Value</div><div class="card-value" style="font-size:1.3rem;">₹${Math.round(avgBookingValue).toLocaleString()}</div></div><div class="card-icon">📊</div></div></div>
+            <div class="dashboard-card card-amber"><div class="card-top"><div><div class="card-label">Completion Rate</div><div class="card-value">${Math.round(completionRate)}%</div></div><div class="card-icon">✅</div></div></div>
+            <div class="dashboard-card card-blue"><div class="card-top"><div><div class="card-label">Active Users</div><div class="card-value">${users.filter(u => u.role === 'user').length}</div></div><div class="card-icon">👥</div></div></div>
+            <div class="dashboard-card card-purple"><div class="card-top"><div><div class="card-label">Listed Bikes</div><div class="card-value">${bikes.filter(b => b.approvalStatus === 'approved').length}</div></div><div class="card-icon">🏍️</div></div><div class="card-sub">${vendors.filter(v => v.approvalStatus === 'approved').length} vendors</div></div>
+        `;
+
+        // Chart color palette using CSS vars equivalent
+        const primary = '#2563EB';
+        const green = '#10B981';
+        const amber = '#F59E0B';
+        const red = '#EF4444';
+        const purple = '#8B5CF6';
+        const gray = '#64748B';
+
+        // Bookings Trend Chart (line)
+        (function () {
+            const labels = [], data = [];
+            for (let i = 29; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })); data.push(bookings.filter(b => new Date(b.createdAt).toDateString() === d.toDateString()).length); }
+            new Chart(document.getElementById('bookingsTrendChart'), { type: 'line', data: { labels, datasets: [{ label: 'Bookings', data, borderColor: primary, backgroundColor: 'rgba(37,99,235,0.1)', tension: .4, fill: true }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+        })();
+
+        // Revenue Trend Chart (bar)
+        (function () {
+            const labels = [], data = [];
+            for (let i = 29; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })); data.push(bookings.filter(b => new Date(b.createdAt).toDateString() === d.toDateString() && b.paymentStatus === 'completed').reduce((s, b) => s + (b.total || 0), 0)); }
+            new Chart(document.getElementById('revenueTrendChart'), { type: 'bar', data: { labels, datasets: [{ label: 'Revenue (₹)', data, backgroundColor: green }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+        })();
+
+        // Status Distribution (doughnut)
+        new Chart(document.getElementById('statusDistributionChart'), { type: 'doughnut', data: { labels: ['Upcoming', 'Active', 'Completed', 'Cancelled'], datasets: [{ data: [bookings.filter(b => b.status === 'upcoming').length, bookings.filter(b => b.status === 'active').length, bookings.filter(b => b.status === 'completed').length, bookings.filter(b => b.status === 'cancelled').length], backgroundColor: [primary, green, gray, red] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+
+        // Payment Status (pie)
+        new Chart(document.getElementById('paymentStatusChart'), { type: 'pie', data: { labels: ['Paid', 'Pending'], datasets: [{ data: [bookings.filter(b => b.paymentStatus === 'completed').length, bookings.filter(b => b.paymentStatus === 'pending').length], backgroundColor: [green, amber] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+
+        // Destinations (horizontal bar)
+        (function () {
+            const counts = {}; bookings.forEach(b => { const d = b.destinationName || b.destination || 'Unknown'; counts[d] = (counts[d] || 0) + 1; }); const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            new Chart(document.getElementById('destinationsChart'), { type: 'bar', data: { labels: sorted.map(d => d[0]), datasets: [{ label: 'Bookings', data: sorted.map(d => d[1]), backgroundColor: purple }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } } });
+        })();
+
+        // Categories (bar)
+        (function () {
+            const counts = {}; bookings.forEach(b => { const c = b.bikeCategory || 'Unknown'; counts[c] = (counts[c] || 0) + 1; }); const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            new Chart(document.getElementById('categoriesChart'), { type: 'bar', data: { labels: sorted.map(c => c[0]), datasets: [{ label: 'Bookings', data: sorted.map(c => c[1]), backgroundColor: primary }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+        })();
+
+        // Top Bikes Table
+        (function () {
+            const stats = {}; bookings.forEach(b => { if (!stats[b.bikeId]) stats[b.bikeId] = { name: b.bikeName, category: b.bikeCategory, bookings: 0, revenue: 0 }; stats[b.bikeId].bookings++; if (b.paymentStatus === 'completed') stats[b.bikeId].revenue += (b.total || 0); });
+            const sorted = Object.values(stats).sort((a, b) => b.bookings - a.bookings).slice(0, 10); const max = sorted[0]?.bookings || 1;
+            const tbody = document.getElementById('topBikesTable');
+            if (sorted.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray);">No data</td></tr>'; return; }
+            tbody.innerHTML = sorted.map((b, i) => `<tr><td><strong>#${i + 1}</strong></td><td>${b.name}</td><td>${b.category}</td><td>${b.bookings}</td><td>₹${b.revenue.toLocaleString()}</td><td><div class="progress-bar"><div class="progress-fill" style="width:${(b.bookings / max) * 100}%"></div></div></td></tr>`).join('');
+        })();
+
+        // Top Users Table
+        (function () {
+            const stats = {}; bookings.forEach(b => { if (!stats[b.userId]) stats[b.userId] = { name: b.userName, email: b.userEmail, bookings: 0, spent: 0 }; stats[b.userId].bookings++; if (b.paymentStatus === 'completed') stats[b.userId].spent += (b.total || 0); });
+            const sorted = Object.values(stats).sort((a, b) => b.bookings - a.bookings).slice(0, 10);
+            const tbody = document.getElementById('topUsersTable');
+            if (sorted.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray);">No data</td></tr>'; return; }
+            tbody.innerHTML = sorted.map((u, i) => `<tr><td><strong>#${i + 1}</strong></td><td>${u.name}</td><td>${u.email}</td><td>${u.bookings}</td><td>₹${u.spent.toLocaleString()}</td></tr>`).join('');
+        })();
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+    </script>
+</body>
+
+</html>

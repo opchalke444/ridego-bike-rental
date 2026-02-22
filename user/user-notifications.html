@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* Notification Container Layout */
+        .notifications-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .notifications-wrapper {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Sidebar Filters */
+        .notification-sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-option:hover {
+            background: #F3F4F6;
+        }
+
+        .filter-option.active {
+            background: #EFF6FF;
+            color: #2563EB;
+            font-weight: 500;
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            cursor: pointer;
+        }
+
+        .filter-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+        }
+
+        .filter-checkbox label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .sidebar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-btn {
+            padding: 0.625rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .sidebar-btn-primary {
+            background: #2563EB;
+            color: white;
+        }
+
+        .sidebar-btn-primary:hover {
+            background: #1D4ED8;
+        }
+
+        .sidebar-btn-outline {
+            background: white;
+            color: #374151;
+            border: 1px solid #D1D5DB;
+        }
+
+        .sidebar-btn-outline:hover {
+            background: #F9FAFB;
+        }
+
+        /* Notification Main Area */
+        .notification-main {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .notification-item {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .notification-item:hover {
+            background: #F9FAFB;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item.unread {
+            background: #EFF6FF;
+            border-left: 3px solid #2563EB;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-time {
+            color: #9CA3AF;
+            font-size: 0.813rem;
+        }
+
+        .notification-content {
+            color: #4B5563;
+            line-height: 1.6;
+            font-size: 0.938rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-category {
+            display: inline-block;
+            padding: 0.188rem 0.625rem;
+            border-radius: 10px;
+            font-size: 0.688rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .cat-booking { background: #DBEAFE; color: #1E40AF; }
+        .cat-payment { background: #D1FAE5; color: #065F46; }
+        .cat-reminder { background: #FEF3C7; color: #92400E; }
+        .cat-system { background: #E0E7FF; color: #3730A3; }
+
+        .new-badge {
+            background: #EF4444;
+            color: white;
+            padding: 0.188rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.688rem;
+            font-weight: 600;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .notification-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.813rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notification-btn-primary {
+            background: #2563EB;
+            color: white;
+        }
+
+        .notification-btn-primary:hover {
+            background: #1D4ED8;
+        }
+
+        .notification-btn-outline {
+            background: white;
+            color: #374151;
+            border: 1px solid #D1D5DB;
+        }
+
+        .notification-btn-outline:hover {
+            background: #F9FAFB;
+        }
+
+        /* Ensure mark as read button is clickable */
+        .mark-read-btn {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            z-index: 10;
+        }
+
+        .mark-read-btn:active {
+            transform: scale(0.95);
+        }
+
+        .section-date {
+            background: #F9FAFB;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.813rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .empty-state {
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #9CA3AF;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .load-more-wrapper {
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .load-more-btn {
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: white;
+            color: #374151;
+            border: 1px solid #D1D5DB;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: #F9FAFB;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 968px) {
+            .notification-sidebar {
+                position: static;
+            }
+            
+            .sidebar-actions {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html" class="active">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Notifications Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="notifications-wrapper">
+            <!-- Sidebar Filters -->
+            <aside class="notification-sidebar">
+                <div class="sidebar-section">
+                    <h4 class="sidebar-title">View</h4>
+                    <div class="filter-option active" data-filter="all">
+                        <span>📋 All Notifications</span>
+                    </div>
+                    <div class="filter-option" data-filter="unread">
+                        <span>🔵 Unread Only</span>
+                    </div>
+                </div>
+
+                <!-- Categories Section Removed -->
+
+                <div class="sidebar-section">
+                    <div class="sidebar-actions">
+                        <button class="sidebar-btn sidebar-btn-outline" id="markAllRead">Mark All Read</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Notification Area -->
+            <div>
+                <!-- Notifications List -->
+                <div class="notification-main">
+                    <!-- Today -->
+                    <div class="section-date">Today</div>
+                    
+                    <div class="notification-item unread" data-category="reminder" data-read="false">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-reminder">Reminder</span>
+                                <span class="new-badge">New</span>
+                            </div>
+                            <span class="notification-time">2 hours ago</span>
+                        </div>
+                        <div class="notification-title">📅 Booking Reminder</div>
+                        <div class="notification-content">
+                            Your booking for Royal Enfield Himalayan starts tomorrow at 10:00 AM. Please reach the pickup location on time.
+                        </div>
+                        <div class="notification-actions">
+                            <button class="mark-read-btn notification-btn notification-btn-outline">Mark as Read</button>
+                            <a href="my-bookings.html" class="notification-btn notification-btn-primary">View Booking</a>
+                        </div>
+                    </div>
+
+                    <div class="notification-item unread" data-category="payment" data-read="false">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-payment">Payment</span>
+                                <span class="new-badge">New</span>
+                            </div>
+                            <span class="notification-time">5 hours ago</span>
+                        </div>
+                        <div class="notification-title">💳 Payment Successful</div>
+                        <div class="notification-content">
+                            Your payment of ₹18,250 for booking #RG2025001234 has been successfully processed. Security deposit will be refunded after bike return.
+                        </div>
+                        <div class="notification-actions">
+                            <button class="notification-btn notification-btn-outline mark-read-btn">Mark as Read</button>
+                        </div>
+                    </div>
+
+                    <div class="notification-item" data-category="booking" data-read="true">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-booking">Booking</span>
+                            </div>
+                            <span class="notification-time">8 hours ago</span>
+                        </div>
+                        <div class="notification-title">✅ Booking Confirmed</div>
+                        <div class="notification-content">
+                            Your booking for Royal Enfield Himalayan (Bike #RG2025001234) has been confirmed. Pickup: Tomorrow at 10:00 AM from Station Road, Mumbai.
+                        </div>
+                        <div class="notification-actions">
+                            <a href="my-bookings.html" class="notification-btn notification-btn-primary">View Details</a>
+                        </div>
+                    </div>
+
+                    <!-- Yesterday -->
+                    <div class="section-date">Yesterday</div>
+
+                    <div class="notification-item" data-category="booking" data-read="true">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-booking">Booking</span>
+                            </div>
+                            <span class="notification-time">1 day ago</span>
+                        </div>
+                        <div class="notification-title">🏍️ Booking Completed</div>
+                        <div class="notification-content">
+                            Thank you for returning the bike on time! Your security deposit of ₹5,000 will be refunded within 3-5 business days.
+                        </div>
+                        <div class="notification-actions">
+                            <a href="rate-booking.html?bike=Bajaj%20Avenger%20Cruise%20220&category=Cruiser%20Bike&location=Leh-Ladakh&dates=Jan%2015%20-%20Jan%2020,%202025&vendor=Ladakh%20Bike%20Rentals&vendorLocation=Leh-Ladakh&contact=%2B91%209876543210&days=5&amount=13500&bookingId=RG2025001150&image=Bajaj%20Avenger%20Cruise%20220.png" class="notification-btn notification-btn-primary">Rate Your Experience</a>
+                        </div>
+                    </div>
+
+                    <!-- This Week -->
+                    <div class="section-date">This Week</div>
+
+                    <div class="notification-item" data-category="payment" data-read="true">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-payment">Payment</span>
+                            </div>
+                            <span class="notification-time">3 days ago</span>
+                        </div>
+                        <div class="notification-title">💰 Refund Processed</div>
+                        <div class="notification-content">
+                            Your security deposit of ₹5,000 has been successfully refunded to your account ending in ****4521.
+                        </div>
+                    </div>
+
+                    <!-- Older -->
+                    <div class="section-date">Older</div>
+
+                    <div class="notification-item" data-category="system" data-read="true">
+                        <div class="notification-header">
+                            <div class="notification-meta">
+                                <span class="notification-category cat-system">System</span>
+                            </div>
+                            <span class="notification-time">2 weeks ago</span>
+                        </div>
+                        <div class="notification-title">👋 Welcome to RideGo!</div>
+                        <div class="notification-content">
+                            Thank you for joining RideGo! Get started by exploring our collection of bikes and scooters across India.
+                        </div>
+                        <div class="notification-actions">
+                            <a href="search-bike.html" class="notification-btn notification-btn-primary">Explore Bikes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter tabs - All/Unread
+            const filterOptions = document.querySelectorAll('.filter-option');
+            const notifications = document.querySelectorAll('.notification-item');
+
+            filterOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    filterOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    notifications.forEach(notif => {
+                        const isRead = notif.getAttribute('data-read') === 'true';
+                        
+                        if (filter === 'all') {
+                            notif.style.display = 'block';
+                        } else if (filter === 'unread') {
+                            notif.style.display = isRead ? 'none' : 'block';
+                        }
+                    });
+
+                    updateSectionVisibility();
+                });
+            });
+
+            // Category filter section removed (no applyFilters button in HTML)
+
+            // Mark individual as read - Using event delegation
+            const notificationMain = document.querySelector('.notification-main');
+            console.log('Notification main element:', notificationMain);
+            
+            if (notificationMain) {
+                notificationMain.addEventListener('click', function(e) {
+                    console.log('Click detected on:', e.target);
+                    console.log('Target classes:', e.target.className);
+                    
+                    if (e.target.classList.contains('mark-read-btn')) {
+                        console.log('Mark as read button clicked!');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const notifItem = e.target.closest('.notification-item');
+                        console.log('Notification item:', notifItem);
+                        
+                        if (notifItem) {
+                            console.log('Marking notification as read...');
+                            notifItem.classList.remove('unread');
+                            notifItem.setAttribute('data-read', 'true');
+                            
+                            const badge = notifItem.querySelector('.new-badge');
+                            if (badge) {
+                                console.log('Removing new badge');
+                                badge.remove();
+                            }
+                            
+                            console.log('Removing mark as read button');
+                            e.target.remove();
+                            updateUnreadCount();
+                            console.log('Notification marked as read successfully!');
+                        }
+                    }
+                });
+            } else {
+                console.error('notification-main element not found!');
+            }
+
+            // Mark all as read
+            const markAllReadBtn = document.getElementById('markAllRead');
+            console.log('Mark all read button:', markAllReadBtn);
+            
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', function() {
+                    console.log('Mark all read clicked!');
+                    const unreadNotifs = document.querySelectorAll('.notification-item.unread');
+                    console.log('Unread notifications:', unreadNotifs.length);
+                    
+                    if (unreadNotifs.length === 0) {
+                        alert('All notifications are already marked as read!');
+                        return;
+                    }
+                    
+                    unreadNotifs.forEach(notif => {
+                        console.log('Marking notification as read:', notif);
+                        notif.classList.remove('unread');
+                        notif.setAttribute('data-read', 'true');
+                        
+                        const badge = notif.querySelector('.new-badge');
+                        if (badge) badge.remove();
+                        
+                        const markBtn = notif.querySelector('.mark-read-btn');
+                        if (markBtn) markBtn.remove();
+                    });
+                    
+                    updateUnreadCount();
+                    console.log('All notifications marked as read!');
+                    alert('All notifications marked as read!');
+                });
+            } else {
+                console.error('markAllRead button not found!');
+            }
+            
+            // Helper function to update unread count
+            function updateUnreadCount() {
+                const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+                const countBadges = document.querySelectorAll('.unread-count');
+                countBadges.forEach(badge => {
+                    badge.textContent = unreadCount;
+                    if (unreadCount === 0) {
+                        badge.style.display = 'none';
+                    } else {
+                        badge.style.display = 'inline-block';
+                    }
+                });
+            }
+
+            // Helper function to show/hide section dates
+            function updateSectionVisibility() {
+                const sections = document.querySelectorAll('.section-date');
+                sections.forEach(section => {
+                    let nextElement = section.nextElementSibling;
+                    let hasVisibleNotif = false;
+                    
+                    while (nextElement && !nextElement.classList.contains('section-date')) {
+                        if (nextElement.classList.contains('notification-item') && 
+                            nextElement.style.display !== 'none') {
+                            hasVisibleNotif = true;
+                            break;
+                        }
+                        nextElement = nextElement.nextElementSibling;
+                    }
+                    
+                    section.style.display = hasVisibleNotif ? 'block' : 'none';
+                });
+            }
+        });
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

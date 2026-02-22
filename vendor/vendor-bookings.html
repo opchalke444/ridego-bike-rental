@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - RideGo Vendor</title>
+    <meta name="description" content="View and manage booking requests on RideGo Vendor Portal.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Vendor Portal</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="vendor-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="vendor-bikes.html"><span class="nav-icon">🏍️</span> My Bikes</a>
+                <a href="vendor-bookings.html" class="active"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="vendor-earnings.html"><span class="nav-icon">💰</span> Earnings</a>
+                <a href="vendor-profile.html"><span class="nav-icon">👤</span> Profile</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Bookings</h1>
+                    <p>View and manage rental requests for your bikes</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">V</div>
+                        <span id="vendorName">Vendor</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Filter -->
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <select class="form-control" id="filterStatus"
+                        style="width: auto; min-width: 170px; padding: 0.6rem 1rem;">
+                        <option value="all">All Bookings</option>
+                        <option value="pending">Pending Approval</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <span id="bookingCount" style="color: var(--gray); font-size: 0.9rem; margin-left: auto;"></span>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="dashboard-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="dashboard-card card-amber">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Pending</div>
+                                <div class="card-value" id="countPending">0</div>
+                            </div>
+                            <div class="card-icon">⏳</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-blue">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Active</div>
+                                <div class="card-value" id="countActive">0</div>
+                            </div>
+                            <div class="card-icon">🔑</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-green">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Completed</div>
+                                <div class="card-value" id="countCompleted">0</div>
+                            </div>
+                            <div class="card-icon">✅</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-red">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Cancelled</div>
+                                <div class="card-value" id="countCancelled">0</div>
+                            </div>
+                            <div class="card-icon">✗</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Table -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>Booking Requests</h2>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="bookingsTableBody"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser && currentUser.role !== 'vendor') { alert('Access denied.'); window.location.href = '../index.html'; }
+        if (currentUser) {
+            document.getElementById('vendorName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Vendor';
+            document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'V')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+        }
+
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        const vendorId = currentUser ? currentUser.id : 'V1';
+
+        function loadBookings() {
+            const all = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            let mine = all.filter(b => b.vendorId === vendorId);
+
+            // Counts
+            document.getElementById('countPending').textContent = mine.filter(b => b.status === 'pending').length;
+            document.getElementById('countActive').textContent = mine.filter(b => b.status === 'active' || b.status === 'confirmed').length;
+            document.getElementById('countCompleted').textContent = mine.filter(b => b.status === 'completed').length;
+            document.getElementById('countCancelled').textContent = mine.filter(b => b.status === 'cancelled').length;
+
+            const f = document.getElementById('filterStatus').value;
+            if (f !== 'all') mine = mine.filter(b => b.status === f);
+            mine = mine.reverse();
+
+            document.getElementById('bookingCount').textContent = `${mine.length} booking${mine.length !== 1 ? 's' : ''}`;
+            const container = document.getElementById('bookingsTableBody');
+
+            if (mine.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">📅</div><p>No bookings found.</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table"><thead><tr>
+                <th>ID</th><th>Customer</th><th>Bike</th><th>Destination</th><th>Dates</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th>
+            </tr></thead><tbody>`;
+
+            mine.forEach(b => {
+                const s = new Date(b.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const e = new Date(b.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                const actions = b.status === 'pending'
+                    ? `<button class="dash-btn dash-btn-approve" onclick="approveBooking('${b.id}')">✓ Approve</button>
+                       <button class="dash-btn dash-btn-reject" onclick="rejectBooking('${b.id}')">✗ Reject</button>`
+                    : '<span style="color:var(--gray);font-size:0.82rem;">—</span>';
+                html += `<tr>
+                    <td><strong>${b.id}</strong></td>
+                    <td>${b.userName}</td>
+                    <td>${b.bikeName}</td>
+                    <td style="text-transform:capitalize;">${b.destination || '—'}</td>
+                    <td>${s} – ${e}</td>
+                    <td>₹${(b.total || 0).toLocaleString()}</td>
+                    <td><span class="status-badge status-${b.paymentStatus === 'completed' ? 'approved' : 'pending'}">${b.paymentStatus || 'pending'}</span></td>
+                    <td><span class="status-badge status-${b.status}" style="text-transform:capitalize;">${b.status}</span></td>
+                    <td>${actions}</td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        document.getElementById('filterStatus').addEventListener('change', loadBookings);
+
+        function approveBooking(id) {
+            if (!confirm('Approve this booking?')) return;
+            const all = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            const idx = all.findIndex(b => b.id === id);
+            if (idx !== -1) { all[idx].status = 'confirmed'; localStorage.setItem('ridego_bookings', JSON.stringify(all)); alert('Booking approved!'); loadBookings(); }
+        }
+        function rejectBooking(id) {
+            if (!confirm('Reject this booking?')) return;
+            const all = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+            const idx = all.findIndex(b => b.id === id);
+            if (idx !== -1) { all[idx].status = 'cancelled'; localStorage.setItem('ridego_bookings', JSON.stringify(all)); alert('Booking rejected.'); loadBookings(); }
+        }
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+
+        loadBookings();
+    </script>
+</body>
+
+</html>

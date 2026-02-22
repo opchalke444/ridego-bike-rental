@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Details - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Bike Details Section -->
+    <section class="section" style="padding-top: 120px; padding-bottom: 4rem;">
+        <div class="bike-details-container">
+            <!-- Back Button -->
+            <a href="search-bike.html" class="btn btn-outline btn-small mb-3" id="backBtn">
+                ← Back to Search
+            </a>
+
+            <!-- Main Bike Details -->
+            <div class="bike-header">
+                <!-- Left: Image -->
+                <div class="bike-image-section">
+                    <img id="bikeImage" src="../assets/images/vehicles/placeholder.png" alt="Bike">
+                </div>
+
+                <!-- Right: Info -->
+                <div class="bike-info-section">
+                    <div>
+                        <span class="bike-badge-top" id="bikeBadge">Featured</span>
+                        <h1 class="bike-title" id="bikeName">Loading...</h1>
+                        <p class="bike-category" id="bikeCategory">-</p>
+                        
+                        <div class="bike-rating-row">
+                            <span class="rating-stars" id="bikeRating">⭐ 0.0</span>
+                            <span class="rating-count" id="bikeReviews">(0 reviews)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bike-price-tag" id="bikePrice">₹0/day</div>
+
+                    <!-- Specifications Cards -->
+                    <div class="spec-cards">
+                        <div class="spec-card-item">
+                            <span class="spec-icon">⚡</span>
+                            <span class="spec-label">Engine</span>
+                            <span class="spec-value" id="bikeEngine">-</span>
+                        </div>
+                        <div class="spec-card-item">
+                            <span class="spec-icon">⛽</span>
+                            <span class="spec-label">Mileage</span>
+                            <span class="spec-value" id="bikeMileage">-</span>
+                        </div>
+                        <div class="spec-card-item">
+                            <span class="spec-icon">💺</span>
+                            <span class="spec-label">Seating</span>
+                            <span class="spec-value" id="bikeSeating">-</span>
+                        </div>
+                        <div class="spec-card-item">
+                            <span class="spec-icon">📍</span>
+                            <span class="spec-label">Available In</span>
+                            <span class="spec-value" id="bikeLocation">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Book Now Button -->
+                    <a href="#" id="bookNowBtn" class="action-button">Book Now</a>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="content-section">
+                <h3 class="content-section-title">Features</h3>
+                <ul class="features-list" id="bikeFeatures">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+
+            <!-- Description Section -->
+            <div class="content-section">
+                <h3 class="content-section-title">Description</h3>
+                <p class="description-text" id="bikeDescription">Loading bike description...</p>
+            </div>
+
+            <!-- Vendor Details Section -->
+            <div class="content-section">
+                <h3 class="content-section-title">Vendor Details</h3>
+                <div class="vendor-info">
+                    <div class="vendor-detail">
+                        <div class="vendor-label">Vendor Name</div>
+                        <div class="vendor-value" id="vendorName">-</div>
+                    </div>
+                    <div class="vendor-detail">
+                        <div class="vendor-label">Rating</div>
+                        <div class="vendor-value" id="vendorRating">⭐ 0.0 (0 reviews)</div>
+                    </div>
+                    <div class="vendor-detail">
+                        <div class="vendor-label">Contact</div>
+                        <div class="vendor-value" id="vendorContact">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Reviews -->
+            <div class="content-section">
+                <h3 class="content-section-title">Customer Reviews</h3>
+                <div class="reviews-grid" id="reviewsSection">
+                    <!-- Reviews will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load bikes data -->
+    <script src="../assets/js/bikes-data.js"></script>
+    
+    <script>
+        let currentBike = null;
+        let currentDestination = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBikeDetails();
+        });
+
+        function loadBikeDetails() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const bikeId = urlParams.get('bike');
+            const destination = urlParams.get('destination') || '';
+            
+            if (!bikeId) {
+                alert('No bike selected. Redirecting to search page...');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+
+            // Get bike data
+            currentBike = getBikeById(bikeId);
+            
+            if (!currentBike) {
+                alert('Bike not found. Redirecting to search page...');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+
+            currentDestination = destination;
+
+            // Update back button
+            if (destination) {
+                document.getElementById('backBtn').href = `search-bike.html?destination=${destination}`;
+            }
+
+            // Display bike details
+            displayBikeDetails();
+            
+            // Load reviews for this specific bike
+            loadBikeReviews();
+        }
+
+        function displayBikeDetails() {
+            // Update page title
+            document.title = `${currentBike.name} - RideGo`;
+
+            // Update bike image
+            document.getElementById('bikeImage').src = `../assets/images/vehicles/${currentBike.image}`;
+            document.getElementById('bikeImage').alt = currentBike.name;
+            document.getElementById('bikeImage').onerror = function() {
+                this.src = '../assets/images/vehicles/placeholder.png';
+            };
+
+            // Update bike info
+            document.getElementById('bikeName').textContent = currentBike.name;
+            document.getElementById('bikeCategory').textContent = currentBike.category;
+            document.getElementById('bikeRating').textContent = `⭐ ${currentBike.rating}`;
+            document.getElementById('bikeReviews').textContent = `(${currentBike.reviews} reviews)`;
+            document.getElementById('bikePrice').textContent = `₹${currentBike.dailyRate.toLocaleString()}/day`;
+
+            // Update specifications
+            document.getElementById('bikeEngine').textContent = currentBike.engine;
+            document.getElementById('bikeMileage').textContent = currentBike.mileage;
+            document.getElementById('bikeSeating').textContent = currentBike.seating;
+            
+            // Show current destination or first available location
+            const displayLocation = currentDestination 
+                ? currentDestination.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+                : currentBike.locations[0];
+            document.getElementById('bikeLocation').textContent = displayLocation;
+
+            // Update features
+            const featuresHtml = currentBike.features.map(feature => `<li>${feature}</li>`).join('');
+            document.getElementById('bikeFeatures').innerHTML = featuresHtml;
+
+            // Update description
+            document.getElementById('bikeDescription').textContent = currentBike.description;
+
+            // Update vendor details based on destination
+            const vendorDestination = currentDestination || currentBike.locations[0].toLowerCase().replace(/\s+/g, '-');
+            const vendor = getVendorByDestination(vendorDestination);
+            
+            document.getElementById('vendorName').textContent = vendor.name;
+            document.getElementById('vendorRating').textContent = `⭐ ${vendor.rating} (${vendor.reviews} reviews)`;
+            document.getElementById('vendorContact').textContent = vendor.contact;
+
+            // Update Book Now button
+            const bookNowBtn = document.getElementById('bookNowBtn');
+            const bookingUrl = `booking.html?bike=${currentBike.id}&destination=${vendorDestination}`;
+            bookNowBtn.href = bookingUrl;
+        }
+
+        function loadBikeReviews() {
+            const reviews = getReviewsForBike(currentBike.id);
+            const reviewsSection = document.getElementById('reviewsSection');
+            
+            if (reviews && reviews.length > 0) {
+                reviewsSection.innerHTML = reviews.map(review => `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <h4 class="review-title">${review.title}</h4>
+                            <span class="review-stars">${'⭐'.repeat(review.rating)}</span>
+                        </div>
+                        <p class="review-text">${review.text}</p>
+                        <p class="review-author">— ${review.author}</p>
+                    </div>
+                `).join('');
+            } else {
+                reviewsSection.innerHTML = '<p style="text-align: center; color: #718096;">No reviews yet. Be the first to review!</p>';
+            }
+        }
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

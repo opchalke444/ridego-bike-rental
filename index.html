@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideGo - Explore the World on Two Wheels</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Remove globe emoji and fix logo display */
+        .brand-logo::before,
+        .footer-brand::before {
+            content: none !important;
+            display: none !important;
+        }
+        
+        .brand-logo {
+            display: block !important;
+            line-height: 0;
+        }
+        
+        .brand-logo img {
+            height: 65px !important;
+            width: auto !important;
+            display: block !important;
+            object-fit: contain;
+        }
+        
+        .footer-brand {
+            display: block !important;
+            line-height: 0;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .footer-brand img {
+            height: 70px !important;
+            width: auto !important;
+            display: block !important;
+            object-fit: contain;
+        }
+
+        /* Destinations Grid */
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* Destination Card */
+        .destination-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Destination Image */
+        .destination-image {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .destination-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .destination-card:hover .destination-image img {
+            transform: scale(1.1);
+        }
+
+        /* Destination Overlay */
+        .destination-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .destination-category {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: var(--font-heading);
+        }
+
+        /* Destination Content */
+        .destination-content {
+            padding: 1.5rem;
+        }
+
+        .destination-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .destination-description {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .destinations-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .destination-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo">
+                <img src="assets/images/logo.png" alt="RideGo Logo">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#vehicles">Explore Rides</a></li>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="login.html" class="btn btn-secondary btn-small">Login</a></li>
+                <li><a href="register.html" class="btn btn-primary btn-small">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Discover Your Next <span class="gradient-text">Adventure</span></h1>
+                <p>Rent premium bikes and scooters to explore breathtaking destinations. Start your journey with trusted local vendors across incredible locations.</p>
+                <div class="hero-buttons">
+                    <a href="register.html" class="btn btn-primary btn-large">Start Exploring</a>
+                    <a href="#vehicles" class="btn btn-outline btn-large">Browse Rides</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="assets/images/hero/adventure-hero.jpg" alt="Adventure Riding">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Why Choose Us</span>
+                <h2 class="section-title">Your Perfect Travel Companion</h2>
+                <p class="section-subtitle">Everything you need for an unforgettable riding experience across stunning destinations</p>
+            </div>
+
+            <style>
+                /* Features Grid - 3 in first row, 2 centered in second row with same size */
+                .features-grid-wrapper {
+                    margin-top: 3rem;
+                }
+
+                .features-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 2rem;
+                    margin-bottom: 2rem;
+                }
+
+                .features-grid-row2 {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 2rem;
+                }
+
+                .features-grid-row2 .feature-card:first-child {
+                    grid-column: 1 / 2;
+                }
+
+                .features-grid-row2 .feature-card:last-child {
+                    grid-column: 2 / 3;
+                }
+
+                @media (max-width: 1024px) {
+                    .features-grid,
+                    .features-grid-row2 {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                    
+                    .features-grid-row2 .feature-card:first-child {
+                        grid-column: 1 / 2;
+                    }
+
+                    .features-grid-row2 .feature-card:last-child {
+                        grid-column: 2 / 3;
+                    }
+                }
+
+                @media (max-width: 640px) {
+                    .features-grid,
+                    .features-grid-row2 {
+                        grid-template-columns: 1fr;
+                    }
+                    
+                    .features-grid-row2 .feature-card:first-child,
+                    .features-grid-row2 .feature-card:last-child {
+                        grid-column: 1 / 2;
+                    }
+                }
+            </style>
+            <div class="features-grid-wrapper">
+                <!-- First Row - 3 Features -->
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🗺️</div>
+                        <h3 class="feature-title">Adventure Routes</h3>
+                        <p class="feature-description">Curated scenic routes and hidden gems recommended by local riders and travel experts.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Instant Booking</h3>
+                        <p class="feature-description">Book your ride in seconds with real-time availability across all destinations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3 class="feature-title">Local Vendors</h3>
+                        <p class="feature-description">Verified partners in every destination, ensuring quality and authentic local experiences.</p>
+                    </div>
+                </div>
+                
+                <!-- Second Row - 2 Features Centered -->
+                <div class="features-grid-row2">
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3 class="feature-title">Best Prices</h3>
+                        <p class="feature-description">Transparent pricing with no hidden fees. Get the best deals for your journey.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Secure Platform</h3>
+                        <p class="feature-description">Protected payments and verified vendors for safe and reliable bookings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vehicles Section -->
+    <section class="section" id="vehicles" style="background: var(--light-gray);">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Our Fleet</span>
+                <h2 class="section-title">Choose Your Ride</h2>
+                <p class="section-subtitle">From city scooters to mountain cruisers - find the perfect vehicle for your adventure</p>
+            </div>
+
+            <div class="vehicles-grid">
+                <!-- Vehicle Card 1 -->
+                <div class="vehicle-card">
+                    <div class="vehicle-image">
+                        <img src="assets/images/vehicles/Royal Enfield Himalayan.png" alt="Royal Enfield Himalayan">
+                        <span class="vehicle-badge badge-popular">Popular</span>
+                    </div>
+                    <div class="vehicle-content">
+                        <h3 class="vehicle-title">Royal Enfield Himalayan</h3>
+                        <p class="vehicle-description">Built for mountain adventures and off-road exploration</p>
+                        <div class="vehicle-footer">
+                            <div class="vehicle-price">
+                                <span class="price-amount">₹1,200</span>
+                                <span class="price-period">/day</span>
+                            </div>
+                            <a href="user/search-bike.html" class="btn btn-primary btn-small">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Card 2 -->
+                <div class="vehicle-card">
+                    <div class="vehicle-image">
+                        <img src="assets/images/vehicles/KTM 390 Adventure.png" alt="KTM Adventure">
+                        <span class="vehicle-badge badge-premium">Premium</span>
+                    </div>
+                    <div class="vehicle-content">
+                        <h3 class="vehicle-title">KTM Adventure 390</h3>
+                        <p class="vehicle-description">High-performance touring for the ultimate road trip</p>
+                        <div class="vehicle-footer">
+                            <div class="vehicle-price">
+                                <span class="price-amount">₹1,500</span>
+                                <span class="price-period">/day</span>
+                            </div>
+                            <a href="user/search-bike.html" class="btn btn-primary btn-small">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Card 3 -->
+                <div class="vehicle-card">
+                    <div class="vehicle-image">
+                        <img src="assets/images/vehicles/Honda Activa 6G.png" alt="Honda Activa">
+                        <span class="vehicle-badge badge-eco">Eco-Friendly</span>
+                    </div>
+                    <div class="vehicle-content">
+                        <h3 class="vehicle-title">Honda Activa 6G</h3>
+                        <p class="vehicle-description">Perfect for city tours and coastal explorations</p>
+                        <div class="vehicle-footer">
+                            <div class="vehicle-price">
+                                <span class="price-amount">₹400</span>
+                                <span class="price-period">/day</span>
+                            </div>
+                            <a href="user/search-bike.html" class="btn btn-primary btn-small">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="user/search-bike.html" class="btn btn-primary btn-large">Explore All Rides</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="section" id="destinations">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Top Destinations</span>
+                <h2 class="section-title">Where Will You Go?</h2>
+                <p class="section-subtitle">Discover breathtaking routes and iconic destinations perfect for two-wheeled adventures</p>
+            </div>
+
+            <div class="destinations-grid">
+                <!-- Destination Card 1 - Leh Ladakh -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Leh Ladakh.png" alt="Leh Ladakh">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Mountain Adventure</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Leh Ladakh</h3>
+                        <p class="destination-description">Conquer the world's highest motorable passes through stunning Himalayan landscapes</p>
+                        <a href="user/search-bike.html?destination=leh-ladakh" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+
+                <!-- Destination Card 2 - Goa -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Goa.png" alt="Goa">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Beach Paradise</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Goa</h3>
+                        <p class="destination-description">Cruise along pristine beaches and explore vibrant coastal culture on two wheels</p>
+                        <a href="user/search-bike.html?destination=goa" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+
+                <!-- Destination Card 3 - Jaipur -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Jaipur.png" alt="Jaipur">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Heritage Circuit</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Jaipur</h3>
+                        <p class="destination-description">Experience royal grandeur visiting majestic forts and palaces of the Pink City</p>
+                        <a href="user/search-bike.html?destination=jaipur" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+
+                <!-- Destination Card 4 - Darjeeling -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Darjeeling.png" alt="Darjeeling">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Hill Station</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Darjeeling</h3>
+                        <p class="destination-description">Ride through misty tea gardens with breathtaking views of Kanchenjunga peaks</p>
+                        <a href="user/search-bike.html?destination=darjeeling" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+
+                <!-- Destination Card 5 - Kochi -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Kochi.png" alt="Kochi">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Backwater Beauty</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Kochi</h3>
+                        <p class="destination-description">Explore Kerala's cultural capital and serene backwaters on scenic coastal routes</p>
+                        <a href="user/search-bike.html?destination=kochi" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+
+                <!-- Destination Card 6 - Manali -->
+                <div class="destination-card">
+                    <div class="destination-image">
+                        <img src="assets/images/destinations/Manali.png" alt="Manali">
+                        <div class="destination-overlay">
+                            <span class="destination-category">Alpine Adventure</span>
+                        </div>
+                    </div>
+                    <div class="destination-content">
+                        <h3 class="destination-title">Manali</h3>
+                        <p class="destination-description">Navigate winding mountain roads through pine forests and snow-capped valleys</p>
+                        <a href="user/search-bike.html?destination=manali" class="btn btn-outline btn-small">Explore Rides</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about" style="background: var(--light-gray);">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">About RideGo</span>
+                <h2 class="section-title">Your Journey, Our Passion</h2>
+                <p class="section-subtitle">Connecting adventurers with trusted local vendors across incredible destinations</p>
+            </div>
+
+            <div class="container">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <p style="font-size: 1.1rem; color: var(--gray); line-height: 1.8; margin-bottom: 2rem; text-align: center;">
+                        RideGo was born from a simple idea: every traveler deserves the freedom to explore on their own terms. We've built a platform that connects adventure seekers with reliable local vendors, ensuring you get the perfect ride for every journey. Whether you're planning a mountain expedition, coastal cruise, or city exploration, we've got you covered.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem;">
+                        <div style="text-align: center;">
+                            <h4 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">Our Mission</h4>
+                            <p style="color: var(--gray);">Make bike rentals accessible, safe, and hassle-free for every traveler.</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <h4 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">Our Vision</h4>
+                            <p style="color: var(--gray);">Become India's most trusted platform for two-wheeled travel adventures.</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <h4 style="font-family: var(--font-heading); color: var(--primary); font-size: 1.5rem; margin-bottom: 0.5rem;">Our Values</h4>
+                            <p style="color: var(--gray);">Safety, transparency, and creating unforgettable travel experiences.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Start Your Adventure?</h2>
+            <p>Join thousands of travelers who trust RideGo for their journeys. Your next destination is waiting.</p>
+            <a href="register.html" class="btn btn-large">Create Free Account</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div>
+                <div class="footer-brand">
+                    <img src="assets/images/logo.png" alt="RideGo Logo">
+                </div>
+                <p class="footer-description">Your trusted companion for two-wheeled adventures across India. Explore breathtaking destinations with quality rides and verified vendors.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#vehicles">Browse Rides</a></li>
+                    <li><a href="#destinations">Destinations</a></li>
+                    <li><a href="#about">About Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>For Vendors</h4>
+                <ul class="footer-links">
+                    <li><a href="register.html">Become a Partner</a></li>
+                    <li><a href="login.html">Vendor Portal</a></li>
+                    <li><a href="#">List Your Vehicles</a></li>
+                    <li><a href="#">Partner Benefits</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Safety Guidelines</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved. Explore responsibly.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/auth.js"></script>
+    <script>
+        function requireLogin(event) {
+            event.preventDefault();
+            if (!AuthService.isAuthenticated()) {
+                sessionStorage.setItem('ridego_redirect_after_login', event.target.href);
+                alert('Please login to continue');
+                window.location.href = 'login.html';
+                return false;
+            }
+            window.location.href = event.target.href;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Protect ALL links to search-bike.html (including destination explore buttons)
+            const searchBikeLinks = document.querySelectorAll('a[href*="search-bike.html"]');
+            searchBikeLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    requireLogin(e);
+                });
+            });
+
+            // Protect "Explore Rides" buttons in destination cards
+            const exploreRideButtons = document.querySelectorAll('.destination-card .btn, a[href*="user/"]');
+            exploreRideButtons.forEach(button => {
+                if (button.getAttribute('href') && button.getAttribute('href').includes('search-bike.html')) {
+                    button.addEventListener('click', function(e) {
+                        requireLogin(e);
+                    });
+                }
+            });
+
+            // Protect "Browse Rides" navigation buttons
+            const browseRideButtons = document.querySelectorAll('a[href="#vehicles"]');
+            browseRideButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!AuthService.isAuthenticated()) {
+                        alert('Please login to browse rides');
+                        window.location.href = 'login.html';
+                    } else {
+                        // Redirect to search page instead of scrolling to non-existent section
+                        window.location.href = 'user/search-bike.html';
+                    }
+                });
+            });
+
+            // Protect "Start Exploring" and other call-to-action buttons
+            const ctaButtons = document.querySelectorAll('a[href*="register.html"]');
+            // Note: We keep register links open, but could add login check if needed
+        });
+    </script>
+</body>
+</html>

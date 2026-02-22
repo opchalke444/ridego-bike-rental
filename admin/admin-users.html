@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - RideGo Admin</title>
+    <meta name="description" content="Manage all registered users on the RideGo platform.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Admin Panel</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="admin-users.html" class="active"><span class="nav-icon">👥</span> Users</a>
+                <a href="admin-vendors.html"><span class="nav-icon">🏪</span> Vendors</a>
+                <a href="admin-bikes.html"><span class="nav-icon">🏍️</span> Bikes</a>
+                <a href="admin-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="admin-analytics.html"><span class="nav-icon">📈</span> Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>User Management</h1>
+                    <p>View, search, and manage platform users</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Stats -->
+                <div class="dashboard-cards-grid">
+                    <div class="dashboard-card card-blue">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Total Users</div>
+                                <div class="card-value" id="totalUsers">0</div>
+                            </div>
+                            <div class="card-icon">👥</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-green">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Active</div>
+                                <div class="card-value" id="activeUsers">0</div>
+                            </div>
+                            <div class="card-icon">✅</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-purple">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">New Today</div>
+                                <div class="card-value" id="newUsersToday">0</div>
+                            </div>
+                            <div class="card-icon">🆕</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card card-red">
+                        <div class="card-top">
+                            <div>
+                                <div class="card-label">Blocked</div>
+                                <div class="card-value" id="blockedUsers">0</div>
+                            </div>
+                            <div class="card-icon">🚫</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;">
+                    <input type="text" class="form-control" id="searchInput"
+                        placeholder="🔍 Search users by name, email, or phone..."
+                        style="flex:1;min-width:250px;padding:0.6rem 1rem;" oninput="filterUsers()">
+                    <select class="form-control" id="statusFilter"
+                        style="width:auto;min-width:140px;padding:0.6rem 1rem;" onchange="filterUsers()">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="blocked">Blocked</option>
+                    </select>
+                    <select class="form-control" id="stateFilter"
+                        style="width:auto;min-width:140px;padding:0.6rem 1rem;" onchange="filterUsers()">
+                        <option value="all">All States</option>
+                    </select>
+                </div>
+
+                <!-- Users Table -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-overflow">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--gray);">Loading
+                                        users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="userDetailsContent"></div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script>
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser.role !== 'admin') { alert('Access denied.'); window.location.href = '../index.html'; }
+
+        document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'A')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        let allUsers = [];
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            allUsers = users.filter(u => u.role === 'user');
+
+            const today = new Date().toDateString();
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            document.getElementById('activeUsers').textContent = allUsers.filter(u => u.status !== 'blocked').length;
+            document.getElementById('blockedUsers').textContent = allUsers.filter(u => u.status === 'blocked').length;
+            document.getElementById('newUsersToday').textContent = allUsers.filter(u => new Date(u.createdAt).toDateString() === today).length;
+
+            const states = [...new Set(allUsers.map(u => u.state).filter(Boolean))].sort();
+            const sf = document.getElementById('stateFilter');
+            sf.innerHTML = '<option value="all">All States</option>';
+            states.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); sf.appendChild(o); });
+
+            renderUsers(allUsers);
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--gray);">No users found.</td></tr>'; return; }
+
+            tbody.innerHTML = users.map(user => {
+                const initials = ((user.firstName || '?')[0] + (user.lastName || '')[0]).toUpperCase();
+                const status = user.status === 'blocked' ? 'blocked' : 'active';
+                return `<tr>
+                    <td><div style="display:flex;align-items:center;gap:0.6rem;">
+                        <div style="width:36px;height:36px;border-radius:50%;background:var(--gradient-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.82rem;">${initials}</div>
+                        <strong>${user.firstName} ${user.lastName}</strong>
+                    </div></td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.city || '—'}, ${user.state || '—'}</td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${status === 'blocked' ? 'rejected' : 'approved'}">${status}</span></td>
+                    <td>
+                        <button class="dash-btn dash-btn-edit" onclick="viewUser('${user.id}')">View</button>
+                        ${status === 'blocked'
+                        ? `<button class="dash-btn dash-btn-approve" onclick="activateUser('${user.id}')">✓ Activate</button>`
+                        : `<button class="dash-btn dash-btn-reject" onclick="blockUser('${user.id}')">✗ Block</button>`}
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterUsers() {
+            const s = document.getElementById('searchInput').value.toLowerCase();
+            const st = document.getElementById('statusFilter').value;
+            const state = document.getElementById('stateFilter').value;
+            renderUsers(allUsers.filter(u => {
+                const match = (u.firstName + ' ' + u.lastName + ' ' + u.email + ' ' + u.phone).toLowerCase().includes(s);
+                const ms = st === 'all' || (st === 'blocked' ? u.status === 'blocked' : u.status !== 'blocked');
+                const mst = state === 'all' || u.state === state;
+                return match && ms && mst;
+            }));
+        }
+
+        function viewUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]').filter(b => b.userId === userId);
+            const spent = bookings.filter(b => b.paymentStatus === 'completed').reduce((s, b) => s + (b.total || 0), 0);
+            document.getElementById('userDetailsContent').innerHTML = `
+                <div style="display:grid;gap:0.8rem;">
+                    ${[['User ID', user.id], ['Name', user.firstName + ' ' + user.lastName], ['Email', user.email], ['Phone', user.phone], ['Address', user.address || '—'], ['City', user.city || '—'], ['State', user.state || '—'], ['Pincode', user.pincode || '—'], ['Total Bookings', bookings.length], ['Total Spent', '₹' + spent.toLocaleString()], ['Joined', new Date(user.createdAt).toLocaleDateString()], ['Status', `<span class="status-badge status-${user.status === 'blocked' ? 'rejected' : 'approved'}">${user.status === 'blocked' ? 'Blocked' : 'Active'}</span>`]].map(([l, v]) => `<div style="display:flex;padding:0.6rem 0;border-bottom:1px solid var(--lighter-gray);"><div style="font-weight:600;width:140px;color:var(--gray);">${l}</div><div>${v}</div></div>`).join('')}
+                </div>`;
+            document.getElementById('userModal').classList.add('show');
+        }
+
+        function closeUserModal() { document.getElementById('userModal').classList.remove('show'); }
+
+        function blockUser(userId) {
+            if (!confirm('Block this user?')) return;
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            const i = users.findIndex(u => u.id === userId);
+            if (i !== -1) { users[i].status = 'blocked'; users[i].blockedAt = new Date().toISOString(); localStorage.setItem('ridego_users', JSON.stringify(users)); alert('User blocked.'); loadUsers(); }
+        }
+
+        function activateUser(userId) {
+            if (!confirm('Activate this user?')) return;
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            const i = users.findIndex(u => u.id === userId);
+            if (i !== -1) { delete users[i].status; delete users[i].blockedAt; localStorage.setItem('ridego_users', JSON.stringify(users)); alert('User activated.'); loadUsers(); }
+        }
+
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; } });
+
+        loadUsers();
+    </script>
+</body>
+
+</html>

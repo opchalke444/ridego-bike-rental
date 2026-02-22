@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - RideGo</title>
+    <meta name="description"
+        content="RideGo Admin Dashboard — Manage users, vendors, bikes, and bookings across the platform.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Admin Panel</small></div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="active">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="admin-users.html">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+                <a href="admin-vendors.html">
+                    <span class="nav-icon">🏪</span> Vendors
+                </a>
+                <a href="admin-bikes.html">
+                    <span class="nav-icon">🏍️</span> Bikes
+                </a>
+                <a href="admin-bookings.html">
+                    <span class="nav-icon">📅</span> Bookings
+                </a>
+                <a href="admin-analytics.html">
+                    <span class="nav-icon">📈</span> Analytics
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink">
+                    <span class="nav-icon">🚪</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN AREA ===== -->
+        <div class="dashboard-main">
+
+            <!-- Top Bar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>Dashboard Overview</h1>
+                    <p>Platform statistics & pending actions</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">A</div>
+                        <span id="adminName">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+
+                <!-- Platform Overview Cards -->
+                <div class="dashboard-cards-grid" id="statsGrid">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Verification Queue -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>Verification Queue</h2>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="pendingApprovalsTable">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>Recent Bookings</h2>
+                        <a href="admin-bookings.html" class="view-all">View All →</a>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="recentBookingsTable">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Users -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-head">
+                        <h2>New Users</h2>
+                        <a href="admin-users.html" class="view-all">View All →</a>
+                    </div>
+                    <div class="table-overflow">
+                        <div id="recentUsersTable">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /dashboard-content -->
+        </div><!-- /dashboard-main -->
+    </div><!-- /dashboard-wrap -->
+
+    <!-- Scripts -->
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+
+    <script>
+        // ===== Auth Guard =====
+        if (!AuthService.isAuthenticated()) {
+            window.location.href = '../login.html';
+        }
+
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser.role !== 'admin') {
+            alert('Access denied. Admin privileges required.');
+            window.location.href = '../index.html';
+        }
+
+        // ===== Populate User Info =====
+        document.getElementById('adminName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+        const initials = ((currentUser.firstName || 'A')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+        document.getElementById('avatarInitials').textContent = initials;
+
+        // ===== Sidebar Toggle (Mobile) =====
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('show');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('show');
+        });
+
+        // ===== Initialize Demo Data =====
+        function initializeDemoData() {
+            if (!localStorage.getItem('ridego_vendors')) {
+                const vendors = [
+                    {
+                        id: 'V1',
+                        userId: 'V1',
+                        businessName: 'Goa Beach Rentals',
+                        businessType: 'company',
+                        email: 'vendor@demo.com',
+                        phone: '+91 9876543211',
+                        address: '456 Vendor Street',
+                        city: 'Goa',
+                        state: 'goa',
+                        pincode: '403001',
+                        approvalStatus: 'approved',
+                        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        approvedAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: 'V2',
+                        userId: 'V2',
+                        businessName: 'Manali Adventure Bikes',
+                        businessType: 'individual',
+                        email: 'manali.vendor@example.com',
+                        phone: '+91 9876543220',
+                        address: 'Mall Road, Manali',
+                        city: 'Manali',
+                        state: 'himachal-pradesh',
+                        pincode: '175131',
+                        approvalStatus: 'pending',
+                        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                localStorage.setItem('ridego_vendors', JSON.stringify(vendors));
+            }
+
+            if (!localStorage.getItem('ridego_bikes')) {
+                const bikes = [
+                    {
+                        id: 'bike-001',
+                        vendorId: 'V1',
+                        name: 'Royal Enfield Himalayan',
+                        category: 'Adventure',
+                        dailyRate: 2500,
+                        cc: 411,
+                        fuelType: 'Petrol',
+                        transmission: 'Manual',
+                        destination: 'goa',
+                        approvalStatus: 'approved',
+                        available: true,
+                        createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        id: 'bike-002',
+                        vendorId: 'V2',
+                        name: 'KTM 390 Adventure',
+                        category: 'Adventure',
+                        dailyRate: 3000,
+                        cc: 373,
+                        fuelType: 'Petrol',
+                        transmission: 'Manual',
+                        destination: 'manali',
+                        approvalStatus: 'pending',
+                        available: true,
+                        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+                localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+            }
+        }
+
+        // ===== Load Dashboard =====
+        function loadDashboard() {
+            initializeDemoData();
+
+            const users = JSON.parse(localStorage.getItem('ridego_users') || '[]');
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const bookings = JSON.parse(localStorage.getItem('ridego_bookings') || '[]');
+
+            const stats = {
+                totalUsers: users.filter(u => u.role === 'user').length,
+                totalVendors: vendors.filter(v => v.approvalStatus === 'approved').length,
+                pendingVendors: vendors.filter(v => v.approvalStatus === 'pending').length,
+                totalBikes: bikes.filter(b => b.approvalStatus === 'approved').length,
+                pendingBikes: bikes.filter(b => b.approvalStatus === 'pending').length,
+                totalBookings: bookings.length,
+                activeBookings: bookings.filter(b => b.status === 'active').length,
+                revenue: bookings.filter(b => b.paymentStatus === 'completed').reduce((sum, b) => sum + (b.total || 0), 0)
+            };
+
+            renderStats(stats);
+            renderPendingApprovals(vendors, bikes);
+            renderRecentBookings(bookings.slice(-5).reverse());
+            renderRecentUsers(users.filter(u => u.role === 'user').slice(-5).reverse());
+        }
+
+        // ===== Render Stats =====
+        function renderStats(stats) {
+            const grid = document.getElementById('statsGrid');
+            grid.innerHTML = `
+                <div class="dashboard-card card-blue">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-label">Total Users</div>
+                            <div class="card-value">${stats.totalUsers}</div>
+                        </div>
+                        <div class="card-icon">👥</div>
+                    </div>
+                </div>
+                <div class="dashboard-card card-green">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-label">Active Vendors</div>
+                            <div class="card-value">${stats.totalVendors}</div>
+                        </div>
+                        <div class="card-icon">🏪</div>
+                    </div>
+                    <div class="card-sub">${stats.pendingVendors} pending approval</div>
+                </div>
+                <div class="dashboard-card card-purple">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-label">Listed Bikes</div>
+                            <div class="card-value">${stats.totalBikes}</div>
+                        </div>
+                        <div class="card-icon">🏍️</div>
+                    </div>
+                    <div class="card-sub">${stats.pendingBikes} pending approval</div>
+                </div>
+                <div class="dashboard-card card-amber">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-label">Total Bookings</div>
+                            <div class="card-value">${stats.totalBookings}</div>
+                        </div>
+                        <div class="card-icon">📅</div>
+                    </div>
+                    <div class="card-sub">${stats.activeBookings} active now</div>
+                </div>
+                <div class="dashboard-card card-green">
+                    <div class="card-top">
+                        <div>
+                            <div class="card-label">Total Revenue</div>
+                            <div class="card-value">₹${stats.revenue.toLocaleString()}</div>
+                        </div>
+                        <div class="card-icon">💰</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== Render Pending Approvals =====
+        function renderPendingApprovals(vendors, bikes) {
+            const container = document.getElementById('pendingApprovalsTable');
+            const pendingVendors = vendors.filter(v => v.approvalStatus === 'pending');
+            const pendingBikes = bikes.filter(b => b.approvalStatus === 'pending');
+
+            if (pendingVendors.length === 0 && pendingBikes.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">✅</div><p>No pending approvals — all clear!</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table">
+                <thead><tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Details</th>
+                    <th>Submitted</th>
+                    <th>Actions</th>
+                </tr></thead><tbody>`;
+
+            pendingVendors.forEach(vendor => {
+                html += `<tr>
+                    <td><span class="status-badge status-vendor">Vendor</span></td>
+                    <td><strong>${vendor.businessName}</strong></td>
+                    <td>${vendor.city}, ${vendor.state}</td>
+                    <td>${new Date(vendor.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="dash-btn dash-btn-approve" onclick="approveVendor('${vendor.id}')">✓ Approve</button>
+                        <button class="dash-btn dash-btn-reject" onclick="rejectVendor('${vendor.id}')">✗ Reject</button>
+                    </td>
+                </tr>`;
+            });
+
+            pendingBikes.forEach(bike => {
+                html += `<tr>
+                    <td><span class="status-badge status-bike">Bike</span></td>
+                    <td><strong>${bike.name}</strong></td>
+                    <td>${bike.category} — ₹${bike.dailyRate}/day</td>
+                    <td>${new Date(bike.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="dash-btn dash-btn-approve" onclick="approveBike('${bike.id}')">✓ Approve</button>
+                        <button class="dash-btn dash-btn-reject" onclick="rejectBike('${bike.id}')">✗ Reject</button>
+                    </td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ===== Render Recent Bookings =====
+        function renderRecentBookings(bookings) {
+            const container = document.getElementById('recentBookingsTable');
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">📅</div><p>No bookings yet.</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table">
+                <thead><tr>
+                    <th>Booking ID</th>
+                    <th>User</th>
+                    <th>Bike</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                </tr></thead><tbody>`;
+
+            bookings.forEach(booking => {
+                const statusClass = `status-${booking.status}`;
+                html += `<tr>
+                    <td><strong>${booking.id}</strong></td>
+                    <td>${booking.userName}</td>
+                    <td>${booking.bikeName}</td>
+                    <td>${new Date(booking.startDate).toLocaleDateString()}</td>
+                    <td><span class="status-badge ${statusClass}" style="text-transform: capitalize;">${booking.status}</span></td>
+                    <td>₹${booking.total.toLocaleString()}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ===== Render Recent Users =====
+        function renderRecentUsers(users) {
+            const container = document.getElementById('recentUsersTable');
+
+            if (users.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">👥</div><p>No users registered yet.</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table">
+                <thead><tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Joined</th>
+                </tr></thead><tbody>`;
+
+            users.forEach(user => {
+                html += `<tr>
+                    <td><strong>${user.firstName} ${user.lastName}</strong></td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.city}, ${user.state}</td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ===== Admin Actions =====
+        function approveVendor(vendorId) {
+            if (!confirm('Are you sure you want to approve this vendor?')) return;
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const index = vendors.findIndex(v => v.id === vendorId);
+            if (index !== -1) {
+                vendors[index].approvalStatus = 'approved';
+                vendors[index].approvedAt = new Date().toISOString();
+                localStorage.setItem('ridego_vendors', JSON.stringify(vendors));
+                alert('Vendor approved successfully!');
+                loadDashboard();
+            }
+        }
+
+        function rejectVendor(vendorId) {
+            if (!confirm('Are you sure you want to reject this vendor?')) return;
+            const vendors = JSON.parse(localStorage.getItem('ridego_vendors') || '[]');
+            const index = vendors.findIndex(v => v.id === vendorId);
+            if (index !== -1) {
+                vendors[index].approvalStatus = 'rejected';
+                vendors[index].rejectedAt = new Date().toISOString();
+                localStorage.setItem('ridego_vendors', JSON.stringify(vendors));
+                alert('Vendor rejected.');
+                loadDashboard();
+            }
+        }
+
+        function approveBike(bikeId) {
+            if (!confirm('Are you sure you want to approve this bike?')) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const index = bikes.findIndex(b => b.id === bikeId);
+            if (index !== -1) {
+                bikes[index].approvalStatus = 'approved';
+                bikes[index].approvedAt = new Date().toISOString();
+                localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+                alert('Bike approved successfully!');
+                loadDashboard();
+            }
+        }
+
+        function rejectBike(bikeId) {
+            if (!confirm('Are you sure you want to reject this bike?')) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const index = bikes.findIndex(b => b.id === bikeId);
+            if (index !== -1) {
+                bikes[index].approvalStatus = 'rejected';
+                bikes[index].rejectedAt = new Date().toISOString();
+                localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+                alert('Bike rejected.');
+                loadDashboard();
+            }
+        }
+
+        // ===== Logout =====
+        document.getElementById('logoutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                AuthService.logout();
+                window.location.href = '../login.html';
+            }
+        });
+
+        // ===== Init =====
+        loadDashboard();
+    </script>
+
+</body>
+
+</html>

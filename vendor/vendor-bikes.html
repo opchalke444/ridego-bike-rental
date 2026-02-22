@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bikes - RideGo Vendor</title>
+    <meta name="description" content="Manage your bike listings on RideGo.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-wrap">
+
+        <!-- SIDEBAR -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/logo.png" alt="RideGo Logo">
+                <div class="sidebar-brand">RideGo <small>Vendor Portal</small></div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="vendor-dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+                <a href="vendor-bikes.html" class="active"><span class="nav-icon">🏍️</span> My Bikes</a>
+                <a href="vendor-bookings.html"><span class="nav-icon">📅</span> Bookings</a>
+                <a href="vendor-earnings.html"><span class="nav-icon">💰</span> Earnings</a>
+                <a href="vendor-profile.html"><span class="nav-icon">👤</span> Profile</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="logoutLink"><span class="nav-icon">🚪</span> Logout</a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-title">
+                    <h1>My Bikes</h1>
+                    <p>Manage all your bike listings</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="dash-btn-add" id="addBikeBtn">➕ Add New Bike</button>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="avatarInitials">V</div>
+                        <span id="vendorName">Vendor</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Filter Bar -->
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <select class="form-control" id="filterStatus"
+                        style="width: auto; min-width: 160px; padding: 0.6rem 1rem;">
+                        <option value="all">All Status</option>
+                        <option value="available">Available</option>
+                        <option value="rented">Rented</option>
+                        <option value="pending">Pending Approval</option>
+                    </select>
+                    <select class="form-control" id="filterCategory"
+                        style="width: auto; min-width: 160px; padding: 0.6rem 1rem;">
+                        <option value="all">All Categories</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Cruiser">Cruiser</option>
+                        <option value="Sport">Sport</option>
+                        <option value="Scooter">Scooter</option>
+                        <option value="Commuter">Commuter</option>
+                        <option value="Electric">Electric</option>
+                    </select>
+                    <span id="bikeCount" style="color: var(--gray); font-size: 0.9rem; margin-left: auto;"></span>
+                </div>
+
+                <!-- Bikes Table -->
+                <div class="dashboard-table-wrap">
+                    <div class="table-overflow">
+                        <div id="bikesTableBody"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT BIKE MODAL -->
+    <div class="modal-overlay" id="bikeModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Bike</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="bikeForm">
+                    <input type="hidden" id="editBikeId">
+                    <div class="form-group">
+                        <label>Bike Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="bikeName" placeholder="e.g. Royal Enfield Himalayan"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category <span class="required">*</span></label>
+                            <select class="form-control" id="bikeCategory" required>
+                                <option value="">Select category</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Cruiser">Cruiser</option>
+                                <option value="Sport">Sport</option>
+                                <option value="Scooter">Scooter</option>
+                                <option value="Commuter">Commuter</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Daily Rate (₹) <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="bikeRate" placeholder="e.g. 1500" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Engine (CC)</label>
+                            <input type="number" class="form-control" id="bikeCC" placeholder="e.g. 411">
+                        </div>
+                        <div class="form-group">
+                            <label>Fuel Type</label>
+                            <select class="form-control" id="bikeFuel">
+                                <option value="Petrol">Petrol</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Transmission</label>
+                            <select class="form-control" id="bikeTransmission">
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination <span class="required">*</span></label>
+                            <select class="form-control" id="bikeDestination" required>
+                                <option value="">Select destination</option>
+                                <option value="goa">Goa</option>
+                                <option value="manali">Manali</option>
+                                <option value="leh-ladakh">Leh-Ladakh</option>
+                                <option value="jaipur">Jaipur</option>
+                                <option value="pondicherry">Pondicherry</option>
+                                <option value="udaipur">Udaipur</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" id="bikeDescription" rows="3"
+                            placeholder="Brief description..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-small" id="cancelModalBtn">Cancel</button>
+                <button class="btn btn-primary btn-small" id="submitBikeBtn">Save Bike</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/bookings.js"></script>
+    <script>
+        // Auth guard
+        if (!AuthService.isAuthenticated()) window.location.href = '../login.html';
+        const currentUser = AuthService.getCurrentUser();
+        if (currentUser && currentUser.role !== 'vendor') {
+            alert('Access denied.'); window.location.href = '../index.html';
+        }
+        if (currentUser) {
+            document.getElementById('vendorName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'Vendor';
+            document.getElementById('avatarInitials').textContent = ((currentUser.firstName || 'V')[0] + (currentUser.lastName || '')[0]).toUpperCase();
+        }
+
+        // Sidebar toggle
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('sidebarToggle').addEventListener('click', () => { sidebar.classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => { sidebar.classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); });
+
+        const vendorId = currentUser ? currentUser.id : 'V1';
+
+        // Load & render
+        function loadBikes() {
+            const allBikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            let myBikes = allBikes.filter(b => b.vendorId === vendorId);
+
+            const statusFilter = document.getElementById('filterStatus').value;
+            const catFilter = document.getElementById('filterCategory').value;
+
+            if (statusFilter !== 'all') {
+                if (statusFilter === 'available') myBikes = myBikes.filter(b => b.available && b.approvalStatus === 'approved');
+                else if (statusFilter === 'rented') myBikes = myBikes.filter(b => !b.available && b.approvalStatus === 'approved');
+                else if (statusFilter === 'pending') myBikes = myBikes.filter(b => b.approvalStatus === 'pending');
+            }
+            if (catFilter !== 'all') myBikes = myBikes.filter(b => b.category === catFilter);
+
+            document.getElementById('bikeCount').textContent = `${myBikes.length} bike${myBikes.length !== 1 ? 's' : ''} found`;
+
+            const container = document.getElementById('bikesTableBody');
+            if (myBikes.length === 0) {
+                container.innerHTML = '<div class="table-empty"><div class="empty-icon">🏍️</div><p>No bikes match your filter. Try a different filter or add a new bike.</p></div>';
+                return;
+            }
+
+            let html = `<table class="dashboard-table"><thead><tr>
+                <th>Bike Name</th><th>Category</th><th>Daily Rate</th><th>Engine</th><th>Destination</th><th>Status</th><th>Actions</th>
+            </tr></thead><tbody>`;
+
+            myBikes.forEach(bike => {
+                let sc, st;
+                if (bike.approvalStatus === 'pending') { sc = 'status-pending'; st = 'Pending Approval'; }
+                else if (bike.approvalStatus === 'rejected') { sc = 'status-rejected'; st = 'Rejected'; }
+                else if (!bike.available) { sc = 'status-rented'; st = 'Rented'; }
+                else { sc = 'status-available'; st = 'Available'; }
+
+                html += `<tr>
+                    <td><strong>${bike.name}</strong></td>
+                    <td>${bike.category}</td>
+                    <td>₹${bike.dailyRate.toLocaleString()}</td>
+                    <td>${bike.cc ? bike.cc + ' CC' : '—'}</td>
+                    <td style="text-transform:capitalize;">${bike.destination}</td>
+                    <td><span class="status-badge ${sc}">${st}</span></td>
+                    <td>
+                        <button class="dash-btn dash-btn-edit" onclick="openEditModal('${bike.id}')">✏️ Edit</button>
+                        <button class="dash-btn dash-btn-delete" onclick="deleteBike('${bike.id}')">🗑️ Delete</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        document.getElementById('filterStatus').addEventListener('change', loadBikes);
+        document.getElementById('filterCategory').addEventListener('change', loadBikes);
+
+        // Modal
+        const modal = document.getElementById('bikeModal');
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Bike';
+            document.getElementById('bikeForm').reset();
+            document.getElementById('editBikeId').value = '';
+            modal.classList.add('show');
+        }
+        function openEditModal(bikeId) {
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const bike = bikes.find(b => b.id === bikeId);
+            if (!bike) return;
+            document.getElementById('modalTitle').textContent = 'Edit Bike';
+            document.getElementById('editBikeId').value = bikeId;
+            document.getElementById('bikeName').value = bike.name;
+            document.getElementById('bikeCategory').value = bike.category;
+            document.getElementById('bikeRate').value = bike.dailyRate;
+            document.getElementById('bikeCC').value = bike.cc || '';
+            document.getElementById('bikeFuel').value = bike.fuelType || 'Petrol';
+            document.getElementById('bikeTransmission').value = bike.transmission || 'Manual';
+            document.getElementById('bikeDestination').value = bike.destination;
+            document.getElementById('bikeDescription').value = bike.description || '';
+            modal.classList.add('show');
+        }
+        function closeModal() { modal.classList.remove('show'); }
+        document.getElementById('addBikeBtn').addEventListener('click', openAddModal);
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+        document.getElementById('submitBikeBtn').addEventListener('click', () => {
+            const name = document.getElementById('bikeName').value.trim();
+            const category = document.getElementById('bikeCategory').value;
+            const rate = parseInt(document.getElementById('bikeRate').value);
+            const destination = document.getElementById('bikeDestination').value;
+            if (!name || !category || !rate || !destination) { alert('Please fill required fields.'); return; }
+
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]');
+            const editId = document.getElementById('editBikeId').value;
+
+            if (editId) {
+                const idx = bikes.findIndex(b => b.id === editId);
+                if (idx !== -1) {
+                    bikes[idx].name = name;
+                    bikes[idx].category = category;
+                    bikes[idx].dailyRate = rate;
+                    bikes[idx].cc = parseInt(document.getElementById('bikeCC').value) || 0;
+                    bikes[idx].fuelType = document.getElementById('bikeFuel').value;
+                    bikes[idx].transmission = document.getElementById('bikeTransmission').value;
+                    bikes[idx].destination = destination;
+                    bikes[idx].description = document.getElementById('bikeDescription').value.trim();
+                    alert('Bike updated successfully!');
+                }
+            } else {
+                bikes.push({
+                    id: 'vb-' + Date.now(),
+                    vendorId: vendorId,
+                    name, category, dailyRate: rate,
+                    cc: parseInt(document.getElementById('bikeCC').value) || 0,
+                    fuelType: document.getElementById('bikeFuel').value,
+                    transmission: document.getElementById('bikeTransmission').value,
+                    destination,
+                    description: document.getElementById('bikeDescription').value.trim(),
+                    approvalStatus: 'pending', available: true,
+                    createdAt: new Date().toISOString()
+                });
+                alert('Bike added! It will be visible after admin approval.');
+            }
+            localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+            closeModal();
+            loadBikes();
+        });
+
+        function deleteBike(bikeId) {
+            if (!confirm('Delete this bike listing?')) return;
+            const bikes = JSON.parse(localStorage.getItem('ridego_bikes') || '[]').filter(b => b.id !== bikeId);
+            localStorage.setItem('ridego_bikes', JSON.stringify(bikes));
+            loadBikes();
+        }
+
+        // Logout
+        document.getElementById('logoutLink').addEventListener('click', e => {
+            e.preventDefault();
+            if (confirm('Logout?')) { AuthService.logout(); window.location.href = '../login.html'; }
+        });
+
+        loadBikes();
+    </script>
+</body>
+
+</html>

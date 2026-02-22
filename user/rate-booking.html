@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Your Booking - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .rating-stars {
+            display: flex;
+            gap: 8px;
+            font-size: 32px;
+            cursor: pointer;
+        }
+        .rating-stars .star {
+            filter: grayscale(100%);
+            opacity: 0.3;
+            transition: all 0.2s;
+        }
+        .rating-stars .star.active,
+        .rating-stars .star:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        .rating-stars .star:hover ~ .star {
+            filter: grayscale(100%);
+            opacity: 0.3;
+        }
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .success-message.show {
+            display: block;
+        }
+        .success-message h3 {
+            color: #155724;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .success-message p {
+            color: #155724;
+            margin: 0;
+            font-size: 16px;
+        }
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Rating Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Rate Your Experience</h2>
+                <p class="section-subtitle">Help us improve by sharing your feedback</p>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message">
+                <div class="success-icon">✅</div>
+                <h3>Review Submitted Successfully!</h3>
+                <p>Your ratings and review have been recorded. Thank you for your feedback!</p>
+            </div>
+
+            <div class="form-row" id="ratingContent">
+                <!-- Left Side - Booking Details -->
+                <div class="feature-card">
+                    <h3 class="mb-3">Booking Details</h3>
+                    
+                    <!-- Bike Info -->
+                    <div class="vehicle-card mb-3">
+                        <div class="vehicle-image">
+                            <img src="../assets/images/vehicles/Royal Enfield Himalayan.png" alt="Bike">
+                        </div>
+                        <div class="vehicle-content">
+                            <h4 class="vehicle-name">Royal Enfield Himalayan</h4>
+                            <p class="vehicle-category">Adventure Bike</p>
+                            <div class="vehicle-details">
+                                <span>📍 Manali</span>
+                                <span>📅 Feb 10 - Feb 15, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Info -->
+                    <div class="stat-card mb-3">
+                        <h4 class="mb-2">Vendor Information</h4>
+                        <div class="vehicle-details">
+                            <span><strong>Vendor:</strong> Manali Bike Rentals</span>
+                            <span><strong>Location:</strong> Manali, HP</span>
+                            <span><strong>Contact:</strong> +91 9876543210</span>
+                        </div>
+                    </div>
+
+                    <!-- Trip Summary -->
+                    <div class="stat-card">
+                        <h4 class="mb-2">Trip Summary</h4>
+                        <div class="vehicle-details">
+                            <span><strong>Total Days:</strong> 5 days</span>
+                            <span><strong>Total Amount:</strong> ₹18,250</span>
+                            <span><strong>Status:</strong> <span class="feature-badge">Completed</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Rating Form -->
+                <div>
+                    <div class="feature-card">
+                        <h3 class="mb-3">Submit Your Review</h3>
+                        <form id="ratingForm">
+                            <!-- Overall Rating - Only 5-star option -->
+                            <div class="form-group">
+                                <label>Rate Your Experience (5 Stars) <span class="required">*</span></label>
+                                <div class="rating-stars mb-2" data-rating-group="overall">
+                                    <span class="star" data-rating="1">⭐</span>
+                                    <span class="star" data-rating="2">⭐</span>
+                                    <span class="star" data-rating="3">⭐</span>
+                                    <span class="star" data-rating="4">⭐</span>
+                                    <span class="star" data-rating="5">⭐</span>
+                                </div>
+                                <input type="hidden" name="overall_rating" required>
+                                <p style="font-size: 0.875rem; color: #6B7280; margin-top: 0.5rem;">
+                                    Click on the stars to rate your experience from 1 to 5
+                                </p>
+                            </div>
+
+                            <!-- Multiple Rating Categories Removed -->
+
+                            <!-- Detailed Review - Now Optional -->
+                            <div class="form-group mt-3">
+                                <label>Detailed Review (Optional)</label>
+                                <textarea class="form-control" id="detailedReview" rows="5" placeholder="Share your experience in detail. What did you like? What could be improved? (Optional)"></textarea>
+                                <p style="font-size: 0.875rem; color: #6B7280; margin-top: 0.5rem;">
+                                    Your detailed feedback helps us improve our services
+                                </p>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-large mt-3">Submit Review</button>
+                            <a href="my-bookings.html" class="btn btn-outline btn-large mt-3">Skip for Now</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get URL parameters and populate booking details
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Update bike details if parameters exist
+        if (urlParams.get('bike')) {
+            // Update bike image
+            const bikeImage = document.querySelector('.vehicle-image img');
+            if (bikeImage && urlParams.get('image')) {
+                bikeImage.src = `../assets/images/vehicles/${urlParams.get('image')}`;
+                bikeImage.alt = urlParams.get('bike');
+            }
+            
+            document.querySelector('.vehicle-name').textContent = urlParams.get('bike') || 'Royal Enfield Himalayan';
+            document.querySelector('.vehicle-category').textContent = urlParams.get('category') || 'Adventure Bike';
+            
+            // Update location and dates in bike card
+            const vehicleDetails = document.querySelector('.vehicle-card .vehicle-details');
+            if (vehicleDetails) {
+                vehicleDetails.innerHTML = `
+                    <span>📍 ${urlParams.get('location') || 'Manali'}</span>
+                    <span>📅 ${urlParams.get('dates') || 'Feb 10 - Feb 15, 2025'}</span>
+                `;
+            }
+            
+            // Update vendor information
+            const vendorDetails = document.querySelectorAll('.stat-card .vehicle-details')[0];
+            if (vendorDetails) {
+                vendorDetails.innerHTML = `
+                    <span><strong>Vendor:</strong> ${urlParams.get('vendor') || 'Manali Bike Rentals'}</span>
+                    <span><strong>Location:</strong> ${urlParams.get('vendorLocation') || 'Manali, HP'}</span>
+                    <span><strong>Contact:</strong> ${urlParams.get('contact') || '+91 9876543210'}</span>
+                `;
+            }
+            
+            // Update trip summary
+            const tripDetails = document.querySelectorAll('.stat-card .vehicle-details')[1];
+            if (tripDetails) {
+                tripDetails.innerHTML = `
+                    <span><strong>Total Days:</strong> ${urlParams.get('days') || '5'} days</span>
+                    <span><strong>Total Amount:</strong> ₹${urlParams.get('amount') || '18,250'}</span>
+                    <span><strong>Status:</strong> <span class="feature-badge">Completed</span></span>
+                `;
+            }
+        }
+
+        // Star Rating Functionality
+        document.querySelectorAll('.rating-stars').forEach(ratingGroup => {
+            const stars = ratingGroup.querySelectorAll('.star');
+            const hiddenInput = ratingGroup.nextElementSibling;
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    
+                    // Update hidden input
+                    if (hiddenInput && hiddenInput.tagName === 'INPUT') {
+                        hiddenInput.value = rating;
+                    }
+                    
+                    // Update visual state
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                });
+                
+                // Hover effect
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.style.filter = 'grayscale(0%)';
+                            s.style.opacity = '1';
+                        } else {
+                            s.style.filter = 'grayscale(100%)';
+                            s.style.opacity = '0.3';
+                        }
+                    });
+                });
+            });
+            
+            // Reset on mouse leave
+            ratingGroup.addEventListener('mouseleave', function() {
+                stars.forEach(star => {
+                    if (!star.classList.contains('active')) {
+                        star.style.filter = '';
+                        star.style.opacity = '';
+                    }
+                });
+            });
+        });
+
+        // Form submission
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate overall rating is filled
+            const overallRating = document.querySelector('input[name="overall_rating"]');
+            
+            if (!overallRating || !overallRating.value) {
+                alert('Please provide your overall rating (1-5 stars)');
+                return;
+            }
+            
+            // Show success message and hide form
+            document.getElementById('successMessage').classList.add('show');
+            document.getElementById('ratingContent').style.display = 'none';
+            
+            // Scroll to top to show success message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Redirect after 3 seconds
+            setTimeout(function() {
+                window.location.href = 'my-bookings.html';
+            }, 3000);
+        });
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>

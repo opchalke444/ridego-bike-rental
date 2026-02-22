@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking - RideGo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="brand-logo">
+                <img src="../assets/images/logo.png" alt="RideGo" style="height: 70px; width: auto;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="user-dashboard.html">Dashboard</a></li>
+                <li><a href="search-bike.html">Search Bikes</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+                <li><a href="user-notifications.html">Notifications</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#" class="btn btn-primary btn-small" id="logoutBtn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Booking Form Section -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Complete Your Booking</h2>
+                <p class="section-subtitle">Fill in the details below to reserve your bike</p>
+            </div>
+
+            <div class="form-row">
+                <!-- Left Side - Booking Form -->
+                <div class="feature-card">
+                    <h3 class="mb-3">Booking Details</h3>
+                    <form id="bookingForm">
+                        <!-- Selected Bike -->
+                        <div class="form-group">
+                            <label>Selected Bike</label>
+                            <input type="text" id="bikeName" class="form-control" readonly>
+                        </div>
+
+                        <!-- Destination -->
+                        <div class="form-group">
+                            <label>Destination</label>
+                            <input type="text" id="destinationName" class="form-control" readonly>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Start Date <span class="required">*</span></label>
+                                <input type="date" id="startDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>End Date <span class="required">*</span></label>
+                                <input type="date" id="endDate" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <!-- Time -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Pickup Time <span class="required">*</span></label>
+                                <input type="time" id="pickupTime" class="form-control" value="10:00" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Drop Time <span class="required">*</span></label>
+                                <input type="time" id="dropTime" class="form-control" value="18:00" required>
+                            </div>
+                        </div>
+
+                        <!-- Pickup & Drop Location -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Pickup Location <span class="required">*</span></label>
+                                <select class="form-control" id="pickupLocation" required>
+                                    <option value="">Select Location</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Drop Location <span class="required">*</span></label>
+                                <select class="form-control" id="dropLocation" required>
+                                    <option value="">Select Location</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Contact Details -->
+                        <h4 class="mb-2 mt-3">Contact Information</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number <span class="required">*</span></label>
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="+91 9876543210" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <input type="email" class="form-control" id="emailAddress" placeholder="your.email@example.com" required>
+                        </div>
+
+                        <!-- Documents -->
+                        <h4 class="mb-2 mt-3">Required Documents</h4>
+                        <div class="form-group">
+                            <label>Driving License Number <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="licenseNumber" placeholder="DL1234567890" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Aadhar Card Number <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="aadharNumber" placeholder="1234 5678 9012" maxlength="14" required>
+                        </div>
+
+                        <!-- Special Instructions -->
+                        <div class="form-group mt-3">
+                            <label>Special Instructions (Optional)</label>
+                            <textarea class="form-control" id="specialInstructions" rows="3" placeholder="Any special requirements or instructions..."></textarea>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="checkbox-group mt-3">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Cancellation Policy</a></label>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side - Booking Summary -->
+                <div>
+                    <div class="feature-card">
+                        <h3 class="mb-3">Booking Summary</h3>
+                        
+                        <!-- Bike Details -->
+                        <div class="vehicle-card mb-3">
+                            <div class="vehicle-image">
+                                <img id="summaryBikeImage" src="../assets/images/vehicles/placeholder.png" alt="Bike">
+                            </div>
+                            <div class="vehicle-content">
+                                <h4 class="vehicle-name" id="summaryBikeName">-</h4>
+                                <p class="vehicle-category" id="summaryBikeCategory">-</p>
+                                <div class="vehicle-rating">
+                                    <span id="summaryRating">⭐ 0.0</span>
+                                    <span id="summaryReviews">(0 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Info -->
+                        <div style="border-top: 2px solid #E5E7EB; padding-top: 1rem; margin-bottom: 1rem;">
+                            <div style="line-height: 2;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Daily Rate</span>
+                                    <span id="dailyRate">₹0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Number of Days</span>
+                                    <span id="numberOfDays">0 days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Breakdown -->
+                        <div style="border-top: 2px solid #E5E7EB; padding-top: 1rem;">
+                            <div style="line-height: 2.5;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Base Price</span>
+                                    <span id="basePrice">₹0</span>
+                                </div>
+                             <!--   <div style="display: flex; justify-content: space-between;" id="insuranceRow" class="hidden">
+                                    <span>Insurance</span>
+                                    <span id="insuranceAmount">₹0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;" id="gpsRow" class="hidden">
+                                    <span>GPS</span>
+                                    <span id="gpsAmount">₹0</span>
+                                </div>    -->
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Security Deposit</span>
+                                    <span>₹5,000</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #6B7280;">
+                                    <span>GST (18%)</span>
+                                    <span id="gstAmount">₹0</span>
+                                </div>
+                            </div>
+
+                            <div style="border-top: 2px solid #E5E7EB; margin-top: 1rem; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <strong>Total Amount</strong>
+                                <strong class="vehicle-price" id="totalAmount">₹5,000</strong>
+                            </div>
+                        </div>
+
+                        <!-- Important Notes -->
+                        <div class="feature-card mb-3">
+                            <h4 class="mb-2">Important Notes</h4>
+                            <ul class="footer-links">
+                                <li>✓ Security deposit is refundable</li>
+                                <li>✓ Valid driving license required</li>
+                                <li>✓ Free cancellation up to 24 hours before</li>
+                                <li>✓ Helmet included in rental</li>
+                                <li>✓ 24/7 roadside assistance</li>
+                            </ul>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" form="bookingForm" class="btn btn-primary btn-large">Proceed to Payment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4 class="footer-title">About RideGo</h4>
+                <p class="footer-description">Your trusted companion for bike and scooter rentals across India's most scenic destinations.</p>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="search-bike.html">Search Bikes</a></li>
+                    <li><a href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li>📧 ridego@gmail.com</li>
+                    <li>📞 +91 9324072928</li>
+                    <li>📍 Thane, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RideGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load bikes data -->
+    <script src="../assets/js/bikes-data.js"></script>
+
+    <script>
+        let currentBike = null;
+        let currentDestination = null;
+        let dailyRateValue = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookingData();
+            setupEventListeners();
+            setupDateConstraints();
+        });
+
+        function loadBookingData() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const bikeId = urlParams.get('bike');
+            const destinationId = urlParams.get('destination');
+
+            if (!bikeId || !destinationId) {
+                alert('Missing booking information. Redirecting...');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+
+            // Load bike data
+            currentBike = getBikeById(bikeId);
+            if (!currentBike) {
+                alert('Bike not found. Redirecting...');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+
+            // Load destination data
+            currentDestination = getDestinationById(destinationId);
+            if (!currentDestination) {
+                alert('Destination not found. Redirecting...');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+
+            dailyRateValue = currentBike.dailyRate;
+
+            // Update form fields
+            document.getElementById('bikeName').value = currentBike.name;
+            document.getElementById('destinationName').value = currentDestination.name + ', ' + currentDestination.state;
+
+            // Update summary
+            document.getElementById('summaryBikeName').textContent = currentBike.name;
+            document.getElementById('summaryBikeCategory').textContent = currentBike.category;
+            document.getElementById('summaryRating').textContent = `⭐ ${currentBike.rating}`;
+            document.getElementById('summaryReviews').textContent = `(${currentBike.reviews} reviews)`;
+            document.getElementById('summaryBikeImage').src = `../assets/images/vehicles/${currentBike.image}`;
+            document.getElementById('summaryBikeImage').onerror = function() {
+                this.src = '../assets/images/vehicles/placeholder.png';
+            };
+            document.getElementById('dailyRate').textContent = `₹${dailyRateValue.toLocaleString()}`;
+
+            // Load pickup/drop locations
+            loadLocations();
+        }
+
+        function loadLocations() {
+            const pickupSelect = document.getElementById('pickupLocation');
+            const dropSelect = document.getElementById('dropLocation');
+
+            // Clear existing options except first
+            pickupSelect.innerHTML = '<option value="">Select Location</option>';
+            dropSelect.innerHTML = '<option value="">Select Location</option>';
+
+            // Add location options
+            currentDestination.pickupLocations.forEach(location => {
+                const option1 = new Option(location.name, location.id);
+                const option2 = new Option(location.name, location.id);
+                pickupSelect.add(option1);
+                dropSelect.add(option2);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('startDate').addEventListener('change', calculatePrice);
+            document.getElementById('endDate').addEventListener('change', calculatePrice);
+            document.getElementById('bookingForm').addEventListener('submit', handleSubmit);
+
+            // Aadhar formatting
+            document.getElementById('aadharNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+                e.target.value = formatted.slice(0, 14);
+            });
+        }
+
+        function setupDateConstraints() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').setAttribute('min', today);
+            document.getElementById('endDate').setAttribute('min', today);
+
+            document.getElementById('startDate').addEventListener('change', function() {
+                const startDate = this.value;
+                if (startDate) {
+                    const nextDay = new Date(startDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    document.getElementById('endDate').setAttribute('min', nextDay.toISOString().split('T')[0]);
+                }
+            });
+        }
+
+        function calculatePrice() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                resetPricing();
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days <= 0) {
+                alert('End date must be after start date');
+                resetPricing();
+                return;
+            }
+
+            const basePrice = dailyRateValue * days;
+           // const insuranceCheckbox = document.getElementById('insurance');
+           //const gpsCheckbox = document.getElementById('gps');
+            const insurance = 0;
+            const gps = 0;
+            const deposit = 5000;
+            const subtotal = basePrice + insurance + gps + deposit;
+            const gst = Math.round(subtotal * 0.18);
+            const total = subtotal + gst;
+            
+            document.getElementById('numberOfDays').textContent = `${days} days`;
+            document.getElementById('basePrice').textContent = `₹${basePrice.toLocaleString()}`;
+            
+            //const insuranceRow = document.getElementById('insuranceRow');
+            //const gpsRow = document.getElementById('gpsRow');
+            
+         //   if (insurance > 0) {
+         //      insuranceRow.style.display = 'flex';
+        //        insuranceRow.classList.remove('hidden');
+        //        document.getElementById('insuranceAmount').textContent = `₹${insurance.toLocaleString()}`;
+        //    } else {
+        //        insuranceRow.style.display = 'none';
+        //        insuranceRow.classList.add('hidden');
+        //    }
+            
+        //    if (gps > 0) {
+        //        gpsRow.style.display = 'flex';
+        //        gpsRow.classList.remove('hidden');
+        //        document.getElementById('gpsAmount').textContent = `₹${gps.toLocaleString()}`;
+        //    } else {
+        //        gpsRow.style.display = 'none';
+        //        gpsRow.classList.add('hidden');
+        //    }
+            
+            document.getElementById('gstAmount').textContent = `₹${gst.toLocaleString()}`;
+            document.getElementById('totalAmount').textContent = `₹${total.toLocaleString()}`;
+       }
+
+        function resetPricing() {
+            document.getElementById('numberOfDays').textContent = '0 days';
+            document.getElementById('basePrice').textContent = '₹0';
+         //   document.getElementById('insuranceRow').style.display = 'none';
+         //   document.getElementById('gpsRow').style.display = 'none';
+            document.getElementById('gstAmount').textContent = '₹0';
+            document.getElementById('totalAmount').textContent = '₹5,000';
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            // Get critical form values
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const pickupLocation = document.getElementById('pickupLocation').value;
+            const dropLocation = document.getElementById('dropLocation').value;
+            const termsCheckbox = document.getElementById('terms');
+            
+            // Validate ONLY critical fields
+            if (!startDate || !endDate) {
+                alert('Please select start and end dates');
+                return;
+            }
+            
+            if (!pickupLocation || !dropLocation) {
+                alert('Please select pickup and drop locations');
+                return;
+            }
+            
+            if (!termsCheckbox || !termsCheckbox.checked) {
+                alert('Please accept the Terms & Conditions to proceed');
+                return;
+            }
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            
+            if (start >= end) {
+                alert('End date must be after start date');
+                return;
+            }
+            
+            // Ensure we have bike and destination
+            if (!currentBike || !currentDestination) {
+                alert('Missing booking information. Please start over.');
+                window.location.href = 'search-bike.html';
+                return;
+            }
+            
+            // Calculate all pricing details
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const basePrice = dailyRateValue * days;
+         // const insuranceCheckbox = document.getElementById('insurance');
+         // const gpsCheckbox = document.getElementById('gps');
+            const insurance = 0;
+            const gps =  0;
+            const deposit = 5000;
+            const subtotal = basePrice + insurance + gps + deposit;
+            const gst = Math.round(subtotal * 0.18);
+            const total = subtotal + gst;
+            
+            // Get optional contact info (don't validate, just pass if filled)
+            const fullName = document.getElementById('fullName').value || '';
+            const phoneNumber = document.getElementById('phoneNumber').value || '';
+            const emailAddress = document.getElementById('emailAddress').value || '';
+            const licenseNumber = document.getElementById('licenseNumber').value || '';
+            const aadharNumber = document.getElementById('aadharNumber').value || '';
+            const pickupTime = document.getElementById('pickupTime').value || '10:00';
+            const dropTime = document.getElementById('dropTime').value || '18:00';
+            
+            // Build parameters object
+            const params = new URLSearchParams({
+                bike: currentBike.id,
+                destination: currentDestination.id,
+                startDate: startDate,
+                endDate: endDate,
+                pickupLocation: pickupLocation,
+                dropLocation: dropLocation,
+                pickupTime: pickupTime,
+                dropTime: dropTime,
+                insurance: false,
+                gps: false,
+                days: days,
+                basePrice: basePrice,
+                insuranceAmount: insurance,
+                gpsAmount: gps,
+                deposit: deposit,
+                gst: gst,
+                total: total
+            });
+            
+            // Add optional contact info if provided
+            if (fullName) params.set('fullName', fullName);
+            if (phoneNumber) params.set('phoneNumber', phoneNumber);
+            if (emailAddress) params.set('emailAddress', emailAddress);
+            if (licenseNumber) params.set('licenseNumber', licenseNumber);
+            if (aadharNumber) params.set('aadharNumber', aadharNumber);
+            
+            console.log('Redirecting to payment with params:', params.toString());
+            window.location.href = `payment.html?${params.toString()}`;
+        }
+    </script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/auth-guard.js"></script>
+</body>
+</html>
